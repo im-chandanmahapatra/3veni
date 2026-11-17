@@ -1,0 +1,38 @@
+{
+  "name": "3veni-sphere-web",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "next build",
+    "start": "node scripts/start.mjs",
+    "clean": "rm -rf .next out",
+    "lint": "eslint . && tsc --noEmit",
+    "test": "tsx --test lib/__tests__/*.test.ts"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.3.5",
+    "@types/nodemailer": "^8.0.2",
+    "eslint": "^10.15.0",
+    "eslint-config-next": "^16.4.6",
+    "gsap": "^3.15.1",
+    "lucide-react": "^0.546.0",
+    "motion": "^12.23.24",
+    "next": "^16.4.6",
+    "nodemailer": "^10.6.0",
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1"
+  },
+  "devDependencies": {
+    "@next/swc-win32-x64-msvc": "^16.4.6",
+    "@tailwindcss/oxide-win32-x64-msvc": "^4.3.5",
+    "@types/node": "^22.14.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "lightningcss-win32-x64-msvc": "^1.33.0",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
