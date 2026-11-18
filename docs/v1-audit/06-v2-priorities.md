@@ -1,126 +1,63 @@
-# 06 — Version 2 Priority Roadmap & Action Plan
+# 06 — V2 Priorities (ranked by severity)
 
-**Audit Reference:** 3VENI SPHERE V1 Baseline Audit  
-**Target:** Transform V1 from a "noticeably mediocre" prototype into an undisputed **top-tier luxury real estate benchmark** (competing with Sotheby's International Realty, Knight Frank, Compass, and Aman Private Residences).
+Format: **problem — where — what V2 should do instead.**
 
----
+## 🔴 Critical — broken functionality, SEO blockers, trust killers
 
-## 1. Prioritization Matrix
+| # | Problem | Where | V2 action |
+|---|---|---|---|
+| C1 | **Enquiry form cannot deliver a lead.** Valid submit → `POST /api/enquiries` **503**; UI tells the visitor to copy their own summary. | `services/enquiryService.ts:262-273`; `.env.example` (no `CRM_WEBHOOK_URL`/`SMTP_*`) | Configure CRM/SMTP, run an end-to-end delivery test per release, show a reference ID, alert the client on failures. |
+| C2 | **Zero contact channels** on the entire site: 0 `tel:`, 0 `mailto:`, 0 `wa.me`, no address, no map, no social. | `config/siteConfig.ts:215-222`; `Footer.tsx:140-149` (env-conditional); `/contact` | Hard-require phone, email, WhatsApp, address, hours; header phone/WhatsApp; fail build if env missing. |
+| C3 | **Sample-only inventory, no prices, no addresses**: every parcel is "Sample Typology … Shared Upon Advisory Consultation". A buyer cannot evaluate anything. | `data/properties.ts:4-8,13,70` | Real inventory with price/price-band, location, RERA/legal ID, status. |
+| C4 | **Canonical/sitemap/OG/JSON-LD domain is an unverified placeholder** `https://3venisphere.com`. | `config/siteConfig.ts:178-198` | Set real `NEXT_PUBLIC_SITE_URL`; assert at build. |
+| C5 | **`/contact` has no `<h1>` and no form in server HTML** (Suspense bailout); same for home's form. | `EnquirySection.tsx:594-606` | Isolate `useSearchParams` to a client leaf; SSR the H1 and copy. |
+| C6 | **Home mobile performance 53, LCP 6.0 s, TBT 900 ms.** | `/` (Lighthouse mobile) | Lazy-load GSAP/ScrollTrigger/Motion, shorten/remove intro, smaller hero, split bundles. |
+| C7 | **No favicon** (404 on `/favicon.ico`, no icon links, no manifest) + console error on every load. | `app/` (no icon file) | Add `app/icon`, `apple-icon`, manifest. |
+| C8 | **No trust signals**: no team, RERA/company ID, years, reviews, press, office. | Whole site | Add leadership, registrations, proof stats, testimonials, awards. |
 
-```
-IMPACT
-  ▲
-  │   [P0: Mobile Perf]    [P0: Interactive Map]
-  │   [P0: Favicon 404]    [P0: Checklist UX]
-  │   [P1: RealEstate Schema] [P1: Zod Validation]
-  │
-  │   [P1: Touch Targets]  [P1: Luxury Micro-interactions]
-  │   [P2: Terrain Maps]   [P2: Villa Configurator]
-  │
-  │   [P2: Footer Accordion] [P3: Twilight Mode]
-  │   [P2: Alt Text Fix]     [P3: PDF Surveys]
-  └──────────────────────────────────────────────► EFFORT
-```
+## 🟠 High — clearly non-premium
 
----
+| # | Problem | Where | V2 action |
+|---|---|---|---|
+| H1 | No property search (location / type / budget); filters limited to category + keyword + size sort; not in URL. | Hero; `FeaturedPlotsSection.tsx:415-418` | Hero search + URL-synced filters. |
+| H2 | Imagery appears synthetic (stray `public/assets/aistudio/*.png`), hero source 1376px upscaled to ~1574px. | `public/images/**`; `HeroSection.tsx:179-190` | Commission real photography/drone/video, ≥ 2400px + AVIF. |
+| H3 | Brand intro curtain blocks the first ~3.3 s of the landing page. | `BrandIntroCurtain.tsx` | ≤ 1 s or remove; never gate LCP. |
+| H4 | "Map" is a fake SVG schematic; no real geography, distances, or landmarks. | `InteractivePlotMap.tsx`; "Location" section | Real styled map, drive-times, neighbourhood data. |
+| H5 | Listing JSON-LD is `Place` only; Organization has no phone/address/sameAs; no `RealEstateListing`/`Offer`/agent. | `lib/structuredData.ts:380-450` | Full real-estate schema set. |
+| H6 | Mobile menu: no scroll lock/focus trap; header CTA hidden < 640px. | `Navbar.tsx:126,139-196` | Lock scroll, trap focus, persistent CTA. |
+| H7 | Cookie banner overlaps hero controls at 768 and gallery captions at 375, buttons 27–29px. | `components/consent/CookieBanner.tsx` | Docked bar, reserve space, 44px buttons. |
+| H8 | Three repetitions of the same "quiet earth" message (brand intro, monograph, philosophy) + generic boilerplate ("Customer-Focused Advisory") — template smell. | Home sections 2, 6, 7 | Rewrite with specifics; cut to one brand statement. |
+| H9 | Gold-on-olive 3.7:1 contrast at 11–12px (axe serious ×5 on `/` & `/about`). | `WhyChooseSection.tsx:48,69` | Lighten gold or enlarge text. |
+| H10 | Detail page too thin: no price, map, docs, agent, lightbox, share. | `app/projects/[slug]/page.tsx` | Full dossier template + sticky enquiry. |
+| H11 | "Future Homes" — three unavailable concepts take a top-nav slot and a home section. | Nav + `/future-homes` | Fold into a status badge or remove until real. |
+| H12 | Only one guide; "checklist" is static (0 inputs). | `/guides/land-buying-checklist` | Interactive, printable checklist + content hub. |
 
-## 2. Ranked Action Items
+## 🟡 Medium — polish and consistency
 
-### 🔴 P0 — Critical (Must Fix Before Any Public Launch)
+| # | Problem | Where | V2 action |
+|---|---|---|---|
+| M1 | Leftover "CHAPTER 06 · ADVISORY DESK" / "CHAPTER 04" folios on standalone pages. | `EnquirySection.tsx:160`; `/about` | Remove or make contextual. |
+| M2 | axe: SVG parcel `aria-label` ≠ visible text; nested-interactive; `heading-order` h1→h3 on `/projects`, `/contact`. | `InteractivePlotMap.tsx:150`; `app/projects/page.tsx:38` | Fix semantics. |
+| M3 | Focus not restored to SVG parcel after modal close; no focus move to first invalid field; inputs rely on 1px border. | `useFocusTrap`, `EnquirySection.tsx` | Visible 2px rings; focus management. |
+| M4 | 61 tap targets < 44px at 375. | Site-wide | Raise targets. |
+| M5 | Hero auto-rotates every 7.5s without pause control. | `HeroSection.tsx:81-85` | Pause/stop button, honour user intent. |
+| M6 | Back-navigation from a parcel returns to scroll 0, not the card list. | Home | Preserve scroll / use query-synced list. |
+| M7 | Duplicate presentation of the same parcel (map panel + lead card). | Featured plots | Single presentation. |
+| M8 | Lazy images show flat black frames — no blur placeholder. | Monograph, Future homes, footer logo | `placeholder="blur"`. |
+| M9 | 4 font families (≈ 274 KB). | `app/layout.tsx:21-48` | Consolidate to 2. |
+| M10 | Sitemap `lastmod` fixed date; thin legal pages in sitemap; 404 canonical `/404`. | `app/sitemap.ts:6`; `lib/metadata.ts` | Real timestamps; drop canonical on 404. |
+| M11 | `"Showing 0{n} of 0{m}"` string concatenation breaks past 9 items. | `FeaturedPlotsSection.tsx:575` | Proper padding helper. |
+| M12 | `frame-ancestors` in CSP still allows `aistudio.google.com`/`*.google.com`; two stray AI-Studio screenshots in `public/`. | `next.config.ts:18`; `public/assets/aistudio/` | Remove. |
+| M13 | `npm ci` prints eslint 10 vs eslint-config-next peer-conflict warnings (ERESOLVE overrides). | `package.json` | Align eslint/eslint-config-next versions. |
 
-#### P0-1: Resolve Missing Favicon (HTTP 404)
-- **Problem:** Every single page view generates a `GET /favicon.ico 404 Not Found` in the browser console.
-- **Root Cause:** Next.js metadata points to a physical `favicon.ico` that does not exist in `/public`.
-- **V2 Action:** Place a high-resolution branded multi-size `.ico` in `/public/favicon.ico` and configure `app/icon.svg` + `app/apple-icon.png` for complete cross-platform iconography.
-- **Estimated Effort:** 15 minutes.
+## ⚪ Low — nice-to-haves
 
-#### P0-2: Overhaul Mobile Flagship Performance (Cut LCP from 6.0s to <1.8s)
-- **Problem:** Mobile Lighthouse score on Home is **55/100** with 6.0s LCP and 830ms TBT.
-- **Root Cause:** Loading 3 heavy landscape background images eagerly, running heavy CSS blur filters (`backdrop-blur-md`), and binding active GSAP/Framer Motion mouse/scroll listeners on mobile devices.
-- **V2 Action:**
-  1. Eagerly load only the initial active vista image; set `priority={false}` and `loading="lazy"` on subsequent slides.
-  2. Disable GSAP pointer-tracking and parallax listeners on viewports `< 768px`.
-  3. Replace dynamic multi-layer SVG scrims with pre-computed CSS linear gradients.
-- **Estimated Effort:** 4 hours.
-
-#### P0-3: Eliminate Mobile Cookie Banner Viewport Occlusion
-- **Problem:** On 375px mobile screens, the fixed cookie consent banner consumes 35% of the viewport and collides with contact submit buttons and plot interest selectors.
-- **V2 Action:** Redesign the mobile banner into a compact floating badge (e.g., bottom-left circular privacy icon) that expands into a full modal only when tapped, never blocking interactive CTAs.
-- **Estimated Effort:** 2 hours.
-
-#### P0-4: Build True Interactive Due-Diligence Checklist
-- **Problem:** The checklist page (`/guides/land-buying-checklist`) is 100% static prose with 0 interactive checkboxes, deceiving users who arrive looking for a functional due diligence verification tool.
-- **V2 Action:**
-  1. Convert all legal verification steps into interactive checkboxes (`role="checkbox"`).
-  2. Implement local storage persistence so buyers retain checked items between visits.
-  3. Display a live "Diligence Score" progress ring (e.g., "7/12 items verified").
-  4. Provide a "Download Due Diligence Dossier" button that compiles a branded PDF checklist.
-- **Estimated Effort:** 6 hours.
-
-#### P0-5: Modernize Interactive Masterplan Map & Restore to `/projects`
-- **Problem:** The SVG plot map is missing from the main `/projects` directory, fails to register polygon clicks reliably in tests, and shrinks to an illegible 340px width on mobile.
-- **V2 Action:**
-  1. Implement a responsive Canvas/SVG Panzoom container supporting pinch-to-zoom and touch drag on mobile.
-  2. Ensure parcel polygons have direct bidirectional binding with property listing cards (clicking a polygon scrolls to and highlights the card; hovering a card illuminates the plot boundary).
-  3. Embed the masterplan prominently at the top of `/projects` with filter sync.
-- **Estimated Effort:** 8 hours.
-
----
-
-### 🟠 P1 — High (Required for Luxury Benchmark & SEO Dominance)
-
-#### P1-1: Implement Schema.org `RealEstateListing` & Rich Structured Data
-- **Problem:** Project detail pages currently emit only generic `Place` or `Organization` schema. Google cannot parse individual parcel prices, availability, acreage, or location coordinates.
-- **V2 Action:**
-  1. Emit Schema.org `RealEstateListing` on all parcel detail pages with embedded `Offer` (price, priceCurrency: "INR", availability: "InStock"), `geo` (`GeoCoordinates`), and `PostalAddress`.
-  2. Implement `BreadcrumbList` schema across `/projects` and `/projects/[slug]`.
-  3. Add `FAQPage` schema on `/guides/land-buying-checklist` to capture accordion rich snippets in Google search results.
-- **Estimated Effort:** 4 hours.
-
-#### P1-2: Fix Hero Vista Tabs ARIA Semantics
-- **Problem:** 10 duplicate `role="tab"` buttons exist without a proper `role="tablist"` wrapper; clicking Tab 2 fails to toggle `aria-selected="true"`.
-- **V2 Action:** Refactor to standard WAI-ARIA tab pattern: 1 `tablist`, exactly 3 `tab` elements, active `aria-selected` synchronization, and `aria-controls` bindings.
-- **Estimated Effort:** 1.5 hours.
-
-#### P1-3: Client-Side Form Validation & Luxury VIP Fallback State
-- **Problem:** Submitting an empty form does not flag required fields with accessible error callouts. Submitting without active SMTP returns a technical 503 error box that damages client trust.
-- **V2 Action:**
-  1. Add client-side Zod validation with instantaneous inline feedback and `aria-invalid` attributes.
-  2. Replace the 503 error box with an elegant luxury concierge fallback: *"Your private inquiry has been logged. Our Senior Land Director is available immediately via Direct Private Line [+91 ...] or WhatsApp."*
-- **Estimated Effort:** 3 hours.
-
-#### P1-4: Touch Target Compliance (Enlarge to >= 48px)
-- **Problem:** Mobile hamburger menu (40px) and carousel chevrons (36px) fail WCAG 2.5.5 minimum touch dimensions.
-- **V2 Action:** Add transparent padding bounds ensuring all interactive mobile targets occupy at least 48 × 48 px.
-- **Estimated Effort:** 1 hour.
-
-#### P1-5: Luxury Editorial Choreography
-- **Problem:** Generic sans-serif links and static 3-box corporate card grids feel like a generic SaaS template rather than a multimillion-dollar land stewardship portal.
-- **V2 Action:** Introduce subtle luxury micro-interactions: smooth gold hairline dividers, Cormorant Garamond serif italic pull-quotes, and high-resolution material textures (laterite stone, beaten brass).
-- **Estimated Effort:** 6 hours.
-
----
-
-### 🟡 P2 — Medium (Refinements & Feature Upgrades)
-
-#### P2-1: Interactive Terrain & Satellite Study
-- Embed an interactive Mapbox satellite layer with contour line toggles, road access lines, and elevation cross-sections to replace static distance cards.
-
-#### P2-2: Land + Villa Architectural Configurator
-- Allow buyers on `/future-homes` to select an architectural typology (Laterite Villa, Timber Pavilion) and visualize it virtually placed on compatible land parcels.
-
-#### P2-3: Mobile Collapsible Footer Accordions
-- Collapse the 16 footer links into neat expandable category headers on mobile viewports to eliminate 700px of excessive scroll fatigue.
-
-#### P2-4: Clean Up Missing Image Alt Attributes
-- Supply descriptive, keyword-rich `alt` attributes to the 4 decorative/background images currently missing them on the homepage.
-
----
-
-### ⚪ P3 — Low (Polish & Long-Term Enhancements)
-
-#### P3-1: Downloadable Topographic Survey CAD/PDF Packets
-- Provide downloadable PDF survey maps behind an advisory sign-in gate.
-
-#### P3-2: Twilight / Evening Lighting Mode
-- Provide a day/night toggle that shifts landscape photography and atmospheric color palette between morning mist and golden-hour sunset.
+| # | Problem | Where | V2 action |
+|---|---|---|---|
+| L1 | No analytics installed, so the consent banner governs nothing. | `context/CookieConsentContext.tsx` | Add privacy-friendly analytics. |
+| L2 | `lang="hi"` not set on Devanagari strings. | Hero/brand lines | Add `lang`. |
+| L3 | Skip-link target `<main>` not focusable. | `app/layout.tsx:109` | `tabIndex={-1}`. |
+| L4 | OG images are raw 1376×768 photos; same image on 10 pages. | `lib/metadata.ts:11` | Branded 1200×630 per page. |
+| L5 | 404 offers no search/suggestions. | `app/not-found.tsx` | Add search/links. |
+| L6 | "Replay Brand Intro" in footer. | `Footer.tsx` | Remove. |
+| L7 | Hindi accents are untranslated decoration. | Brand copy | Add translation captions. |

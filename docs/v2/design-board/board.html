@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3VENI SPHERE — V2 design board (proof of DESIGN.md, not shipped code)</title>
+<!-- Documentation artefact only. Fonts load from Google Fonts here; the shipped site self-hosts them. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@72,300;72,400&family=Instrument+Sans:wght@400..600&family=Tiro+Devanagari+Hindi&display=block" rel="stylesheet">
+<style>
+:root{
+  --canvas:#F7F3EC; --paper:#FCFAF6; --sunken:#EFE8DB; --sunken-2:#E6DDCC; --hairline:#DCD3C2; --line-strong:#8A7F6E;
+  --ink:#1E1B17; --ink-2:#3F392F; --ink-3:#5A5145; --ink-4:#6B6154;
+  --night:#1C1A16; --night-deep:#14120F; --night-raised:#26231E; --night-line:#3A362F; --on-night:#F4EFE5; --on-night-2:#C7BEAD; --on-night-3:#A39A8A;
+  --clay:#98400F; --clay-strong:#7A310A; --clay-deep:#5F2608; --clay-soft:#E39A73;
+  --olive:#41490D; --olive-soft:#B7C27A; --brass:#C49A50; --brass-soft:#E2C58B; --brass-ink:#856220;
+  --success:#3B5A1F; --error:#A3281C; --error-soft:#F0897C;
+  --serif:'Newsreader',Georgia,serif; --sans:'Instrument Sans',system-ui,sans-serif; --deva:'Tiro Devanagari Hindi',serif;
+  --ease:cubic-bezier(.22,.8,.2,1);
+}
+*{box-sizing:border-box;margin:0}
+body{background:#d9d2c3;font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased}
+.board{width:1440px;margin:0 auto 40px;background:var(--canvas);padding:72px 64px 80px}
+.sec-title{font:600 12px/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--clay);margin-bottom:28px;display:flex;gap:16px;align-items:center}
+.sec-title::after{content:"";flex:1;height:1px;background:var(--hairline)}
+h1.bt{font:300 64px/1.04 var(--serif);letter-spacing:-.02em;margin-bottom:12px}
+.sub{font:400 18px/1.6 var(--sans);color:var(--ink-2);max-width:62ch;margin-bottom:56px}
+.grid{display:grid;gap:24px}
+/* Swatches */
+.sw{display:grid;grid-template-columns:repeat(6,1fr);gap:0;border:1px solid var(--hairline);margin-bottom:20px}
+.sw div{padding:14px 12px 12px;min-height:104px;font:500 12px/1.35 var(--sans);display:flex;flex-direction:column;justify-content:flex-end}
+.sw b{font-weight:600;font-size:13px}
+.sw span{opacity:.92}
+.lab{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin:26px 0 10px}
+/* Type scale */
+.ts{display:grid;grid-template-columns:200px 1fr;gap:8px 32px;align-items:baseline;border-top:1px solid var(--hairline);padding:18px 0}
+.ts .k{font:500 12px/1.4 var(--sans);color:var(--ink-3)}
+.ts .k b{display:block;color:var(--ink);font-weight:600}
+.dxl{font:300 80px/1.02 var(--serif);letter-spacing:-.02em}
+.dlg{font:300 64px/1.05 var(--serif);letter-spacing:-.018em}
+.dmd{font:300 40px/1.12 var(--serif);letter-spacing:-.012em}
+.ttl{font:400 26px/1.2 var(--serif)}
+.lead{font:400 20px/1.6 var(--sans);color:var(--ink-2);max-width:56ch}
+.body{font:400 16px/1.65 var(--sans);color:var(--ink-2);max-width:64ch}
+.cap{font:400 13px/1.45 var(--sans);color:var(--ink-3)}
+.ovl{font:600 12px/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--clay)}
+.num{font:500 16px/1.4 var(--sans);font-variant-numeric:tabular-nums lining-nums;color:var(--ink)}
+.deva{font:400 20px/1.5 var(--deva);color:var(--ink-2)}
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:48px;padding:0 24px;font:600 13px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;border:1px solid transparent;cursor:pointer;transition:background .18s var(--ease),color .18s var(--ease),border-color .18s var(--ease);white-space:nowrap}
+.btn svg{width:16px;height:16px;transition:transform .18s var(--ease)}
+.btn-p{background:var(--clay);color:var(--paper)} .btn-p:hover,.btn-p.h{background:var(--clay-strong)} .btn-p:hover svg,.btn-p.h svg{transform:translateX(3px)}
+.btn-p.a{background:var(--clay-deep)}
+.btn-s{background:transparent;color:var(--ink);border-color:var(--ink)} .btn-s:hover,.btn-s.h{background:var(--ink);color:var(--canvas)}
+.btn.f{outline:2px solid var(--clay);outline-offset:3px}
+.btn.d{background:var(--sunken-2);color:var(--ink-4);cursor:not-allowed;border-color:transparent}
+.btn.l{background:var(--clay);color:transparent;position:relative;pointer-events:none}
+.btn.l::after{content:"";position:absolute;width:18px;height:18px;border:2px solid rgba(252,250,246,.4);border-top-color:var(--paper);border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.btn-dark-p{background:var(--paper);color:var(--ink)} .btn-dark-p:hover{background:#fff}
+.btn-dark-s{background:transparent;color:var(--on-night);border-color:rgba(244,239,229,.55)}
+.tlink{font:600 13px/1.2 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--clay);display:inline-flex;gap:8px;align-items:center;padding:12px 0;position:relative}
+.tlink::after{content:"";position:absolute;left:0;right:0;bottom:6px;height:1px;background:currentColor;transform:scaleX(.0);transform-origin:left;transition:transform .28s var(--ease)}
+.tlink:hover::after,.tlink.h::after{transform:scaleX(1)} .tlink svg{width:16px;height:16px}
+.row{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.state{font:500 11px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin:6px 0 8px}
+/* Fields */
+.fld{display:flex;flex-direction:column;gap:8px;width:100%}
+.fld label{font:600 13px/1.2 var(--sans);color:var(--ink-2)} .fld label i{font-style:normal;font-weight:400;color:var(--ink-3)}
+.inp{height:52px;padding:0 16px;background:var(--paper);border:1px solid var(--line-strong);font:400 16px/1 var(--sans);color:var(--ink);width:100%}
+.inp::placeholder{color:var(--ink-4)}
+.inp.f{border-color:var(--clay);outline:2px solid var(--clay);outline-offset:2px}
+.inp.e{border-color:var(--error)} .inp.d{background:var(--sunken);color:var(--ink-4);border-color:var(--hairline)}
+.msg{font:400 13px/1.4 var(--sans);color:var(--ink-3)} .msg.e{color:var(--error);display:flex;gap:6px;align-items:flex-start} .msg svg{width:16px;height:16px;flex:none;margin-top:1px}
+.sel{appearance:none;background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none' stroke='%231E1B17' stroke-width='1.5'%3E%3Cpath d='M5 8l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 14px center}
+/* Badges */
+.bdg{display:inline-flex;align-items:center;height:28px;padding:0 10px;font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--line-strong);color:var(--ink);background:var(--paper)}
+.bdg.dk{background:var(--night);color:var(--on-night);border-color:var(--night)} .bdg.cl{border-color:var(--clay);color:var(--clay)} .bdg.ol{background:var(--olive);border-color:var(--olive);color:var(--paper)}
+/* Card */
+.card{background:var(--paper);border:1px solid var(--hairline);display:flex;flex-direction:column;position:relative}
+.card .ph{aspect-ratio:3/2;position:relative;overflow:hidden;background:var(--sunken)}
+.card .ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .7s var(--ease)}
+.card:hover .ph img{transform:scale(1.025)}
+.card .ph .bdg{position:absolute;left:16px;top:16px}
+.card .bd{padding:24px 24px 22px;display:flex;flex-direction:column;gap:14px}
+.card h3{font:400 26px/1.2 var(--serif)} .card .loc{font:400 14px/1.4 var(--sans);color:var(--ink-3)}
+dl.specs{display:grid;grid-template-columns:repeat(3,auto);gap:0 24px;border-top:1px solid var(--hairline);padding-top:14px;margin:0;justify-content:start}
+dl.specs dt{font:600 12px/1.2 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)} dl.specs dd{margin:6px 0 0;font:500 15px/1.3 var(--sans);font-variant-numeric:tabular-nums lining-nums}
+.price{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--hairline);padding-top:14px;font:400 14px/1.3 var(--sans);color:var(--ink-3)} .price b{font:500 15px/1 var(--sans);color:var(--ink)}
+/* placeholder slot */
+.slot{border:1px dashed var(--line-strong);background:var(--sunken);padding:22px 24px;display:flex;flex-direction:column;gap:8px}
+.slot .ovl{color:var(--ink-3)}
+.slot p{font:400 15px/1.5 var(--sans);color:var(--ink-2)}
+/* filter bar */
+.chip{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border:1px solid var(--line-strong);background:var(--paper);font:500 13px/1 var(--sans)} .chip svg{width:14px;height:14px}
+.pg{display:flex;gap:0;border:1px solid var(--hairline)} .pg span{width:48px;height:48px;display:grid;place-items:center;font:500 14px/1 var(--sans);border-right:1px solid var(--hairline)} .pg span:last-child{border:0} .pg .on{background:var(--ink);color:var(--canvas)}
+/* hero mocks */
+.hero{position:relative;width:1312px;height:830px;overflow:hidden;background:var(--night-deep);color:var(--on-night)}
+.hero img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 42%}
+.hero .scrim{position:absolute;inset:0;background:linear-gradient(90deg,rgba(20,18,15,.84) 0%,rgba(20,18,15,.76) 46%,rgba(20,18,15,.28) 72%,rgba(20,18,15,0) 100%),linear-gradient(0deg,rgba(20,18,15,.7) 0%,rgba(20,18,15,0) 34%),linear-gradient(180deg,rgba(20,18,15,.6) 0%,rgba(20,18,15,0) 22%)}
+.hdr{position:absolute;left:0;right:0;top:0;height:80px;padding:0 48px;display:flex;align-items:center;justify-content:space-between;z-index:3}
+.brand{display:flex;gap:12px;align-items:center;font:600 13px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase}
+.brand i{width:36px;height:36px;border-radius:50%;background:var(--paper);display:grid;place-items:center}
+.nav{display:flex;gap:36px;font:500 14px/1 var(--sans)} .nav a{opacity:.92;padding:8px 0}
+.hero .copy{position:absolute;left:48px;top:150px;width:640px;z-index:2}
+.hero .ovl{color:var(--brass-soft);margin-bottom:22px;display:block}
+.hero h1{font:300 80px/1.02 var(--serif);letter-spacing:-.02em;margin-bottom:24px}
+.hero .lead{color:var(--on-night-2);font-size:19px;max-width:42ch;margin-bottom:34px}
+.hero .plate{position:absolute;right:48px;bottom:140px;text-shadow:0 1px 12px rgba(20,18,15,.6);font:500 12px/1.4 var(--sans);letter-spacing:.04em;color:var(--on-night-2);text-align:right;z-index:2}
+.srch{position:absolute;left:48px;right:48px;bottom:-1px;height:104px;background:var(--paper);color:var(--ink);display:grid;grid-template-columns:1fr 1fr 1fr 220px;gap:0;z-index:3;border:1px solid var(--hairline)}
+.srch .c{padding:22px 24px;border-right:1px solid var(--hairline);display:flex;flex-direction:column;gap:8px;justify-content:center} .srch .c span{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)} .srch .c b{font:500 16px/1.2 var(--sans);display:flex;justify-content:space-between}
+.srch .go{background:var(--clay);color:var(--paper);display:grid;place-items:center;font:600 13px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase}
+.mob{width:390px;background:var(--canvas);border:1px solid var(--hairline);position:relative}
+.mob .mh{height:64px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--hairline)}
+.mob .mi{aspect-ratio:4/5;position:relative;overflow:hidden} .mob .mi img{width:100%;height:100%;object-fit:cover;object-position:34% 50%}
+.mob .cp{padding:10px 20px 0;font:400 12px/1.4 var(--sans);color:var(--ink-3)}
+.mob .tx{padding:26px 20px 28px}
+.mob h1{font:300 44px/1.04 var(--serif);letter-spacing:-.02em;margin:10px 0 16px}
+.mob .lead{font-size:17px;margin-bottom:24px;color:var(--ink-2)}
+.mob .btn{width:100%}
+.mob .sf{margin:0 20px 28px;border:1px solid var(--hairline);background:var(--paper);padding:18px;display:grid;gap:14px}
+.hm{width:100%;height:84px;position:relative;margin-bottom:12px}
+.hdr-solid{height:80px;background:rgba(247,243,236,.96);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:space-between;padding:0 48px;color:var(--ink)}
+.hdr-solid .nav{color:var(--ink-2)} .hdr-solid .on{color:var(--clay);box-shadow:inset 0 -1px 0 var(--clay)}
+.pair{display:grid;grid-template-columns:1312px;gap:32px}
+.dark{background:var(--night);color:var(--on-night);padding:56px 48px}
+.dark .ovl{color:var(--brass-soft)}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:40px}
+.cols3 > div{border-top:1px solid var(--night-line);padding-top:20px}
+.cols3 .n{font:600 12px/1 var(--sans);letter-spacing:.14em;color:var(--brass-soft);margin-bottom:14px}
+.cols3 h4{font:300 30px/1.15 var(--serif);margin-bottom:10px} .cols3 p{font:400 15px/1.6 var(--sans);color:var(--on-night-2)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-arrow" viewBox="0 0 20 20"><path d="M3 10h13M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/></symbol>
+    <symbol id="i-down" viewBox="0 0 20 20"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/></symbol>
+    <symbol id="i-close" viewBox="0 0 20 20"><path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 20 20"><path d="M10 3L18 17H2z M10 8v4 M10 14.2v.1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/></symbol>
+  </defs>
+</svg>
+
+<!-- ============ BOARD 1 — colour & type ============ -->
+<section class="board" id="b1">
+  <div class="sec-title">3VENI SPHERE · V2 design board · 01 Colour &amp; type</div>
+  <h1 class="bt">Quiet authority.</h1>
+  <p class="sub">A warm paper canvas, ink-black text, one terracotta for action, a deep night surface for contrast — and a serif that does the heavy lifting. Every colour pair below was calculated against WCAG 2.2 (ratios shown).</p>
+
+  <div class="lab">Light surfaces &amp; ink</div>
+  <div class="sw">
+    <div style="background:#F7F3EC;color:#1E1B17"><b>canvas</b><span>#F7F3EC · page</span><span>ink 15.5:1</span></div>
+    <div style="background:#FCFAF6;color:#1E1B17;border-left:1px solid #DCD3C2"><b>paper</b><span>#FCFAF6 · cards, fields</span><span>ink 16.5:1</span></div>
+    <div style="background:#EFE8DB;color:#1E1B17"><b>sunken</b><span>#EFE8DB · alt bands</span><span>ink 14.1:1</span></div>
+    <div style="background:#E6DDCC;color:#1E1B17"><b>sunken-2</b><span>#E6DDCC · wells</span><span>ink-2 8.5:1</span></div>
+    <div style="background:#DCD3C2;color:#1E1B17"><b>hairline</b><span>#DCD3C2 · decorative rules</span></div>
+    <div style="background:#8A7F6E;color:#FCFAF6"><b>line-strong</b><span>#8A7F6E · control borders</span><span>3.5:1 on canvas</span></div>
+  </div>
+  <div class="sw">
+    <div style="background:#1E1B17;color:#F7F3EC"><b>ink</b><span>#1E1B17 · headings, body</span><span>15.5:1</span></div>
+    <div style="background:#3F392F;color:#F7F3EC"><b>ink-2</b><span>#3F392F · secondary</span><span>10.3:1</span></div>
+    <div style="background:#5A5145;color:#F7F3EC"><b>ink-3</b><span>#5A5145 · captions, meta</span><span>7.0:1</span></div>
+    <div style="background:#6B6154;color:#F7F3EC"><b>ink-4</b><span>#6B6154 · placeholder</span><span>5.5:1</span></div>
+    <div style="background:#856220;color:#F7F3EC"><b>brass-ink</b><span>#856220 · rare small gold text</span><span>5.0:1</span></div>
+    <div style="background:#C49A50;color:#1E1B17"><b>brass</b><span>#C49A50 · ornament only</span><span>2.35:1 — never text on light</span></div>
+  </div>
+  <div class="lab">Night surfaces, brand accents, states</div>
+  <div class="sw">
+    <div style="background:#14120F;color:#F4EFE5"><b>night-deep</b><span>#14120F · scrim base</span><span>on-night 16.3:1</span></div>
+    <div style="background:#1C1A16;color:#F4EFE5"><b>night</b><span>#1C1A16 · dark bands, footer</span><span>on-night 15.2:1</span></div>
+    <div style="background:#26231E;color:#C7BEAD"><b>night-raised</b><span>#26231E · on-dark cards</span><span>on-night-2 8.5:1</span></div>
+    <div style="background:#1C1A16;color:#E2C58B"><b>brass-soft</b><span>#E2C58B · on-dark accent text</span><span>10.4:1</span></div>
+    <div style="background:#1C1A16;color:#E39A73"><b>clay-soft</b><span>#E39A73 · on-dark accent</span><span>7.6:1</span></div>
+    <div style="background:#1C1A16;color:#B7C27A"><b>olive-soft</b><span>#B7C27A · on-dark positive</span><span>9.1:1</span></div>
+  </div>
+  <div class="sw">
+    <div style="background:#98400F;color:#FCFAF6"><b>clay</b><span>#98400F · action, links</span><span>paper 6.6:1 · on canvas 6.2:1</span></div>
+    <div style="background:#7A310A;color:#FCFAF6"><b>clay-strong</b><span>#7A310A · hover</span><span>canvas 8.4:1</span></div>
+    <div style="background:#5F2608;color:#FCFAF6"><b>clay-deep</b><span>#5F2608 · pressed</span><span>paper 11.4:1</span></div>
+    <div style="background:#41490D;color:#FCFAF6"><b>olive</b><span>#41490D · one editorial band</span><span>paper 9.2:1</span></div>
+    <div style="background:#3B5A1F;color:#FCFAF6"><b>success</b><span>#3B5A1F</span><span>on canvas 7.1:1</span></div>
+    <div style="background:#A3281C;color:#FCFAF6"><b>error</b><span>#A3281C</span><span>on canvas 6.6:1</span></div>
+  </div>
+
+  <div class="lab" style="margin-top:44px">Type scale — Newsreader (display, static optical size 72) · Instrument Sans (UI + body) · Tiro Devanagari (motto lines only)</div>
+  <div class="ts"><div class="k"><b>Display XL</b>Newsreader 300 · 44→80px · 1.02 · −0.02em</div><div class="dxl">Quiet earth.</div></div>
+  <div class="ts"><div class="k"><b>Display L (H2)</b>Newsreader 300 · 36→64px · 1.05 · −0.018em</div><div class="dlg">Curated land, held with confidence.</div></div>
+  <div class="ts"><div class="k"><b>Display M (H3)</b>Newsreader 300 · 28→40px · 1.12</div><div class="dmd">Aranya Ridge Terraces</div></div>
+  <div class="ts"><div class="k"><b>Title</b>Newsreader 400 · 22→26px · 1.2</div><div class="ttl">Vatika Banyan Corner</div></div>
+  <div class="ts"><div class="k"><b>Lead</b>Instrument Sans 400 · 17→20px · 1.6</div><div class="lead">Designed around minimal earthwork and uninterrupted sightlines, preserving natural drainage and afternoon breeze corridors.</div></div>
+  <div class="ts"><div class="k"><b>Body</b>Instrument Sans 400 · 16px · 1.65 · max 64ch</div><div class="body">Total square footage alone does not determine buildability. Examine frontage width relative to plot depth and the setback requirements that apply before you commit.</div></div>
+  <div class="ts"><div class="k"><b>Caption · Overline · Numerals</b>13px · 12px/600/+0.14em caps · tabular lining</div><div class="row" style="gap:40px"><span class="cap">Plate 01 — Aranya Ridge Terraces</span><span class="ovl">Sample parcel · Open for enquiry</span><span class="num">4,800 sq. ft. · 60 × 80 ft · 114 m</span></div></div>
+  <div class="ts"><div class="k"><b>Devanagari motto</b>Tiro Devanagari Hindi 400 · lazy, below the fold</div><div class="deva">भूमि · वास्तु · विश्वास &nbsp;—&nbsp; Built on clarity, grounded in earth.</div></div>
+</section>
+
+<!-- ============ BOARD 2 — components ============ -->
+<section class="board" id="b2">
+  <div class="sec-title">3VENI SPHERE · V2 design board · 02 Components &amp; states</div>
+
+  <div class="lab">Buttons — 48px high (44px minimum target), square corners, one primary per view</div>
+  <div class="grid" style="grid-template-columns:repeat(6,auto);justify-content:start;gap:20px 28px">
+    <div><div class="state">Primary · default</div><a class="btn btn-p">Request dossier <svg><use href="#i-arrow"/></svg></a></div>
+    <div><div class="state">hover</div><a class="btn btn-p h">Request dossier <svg><use href="#i-arrow"/></svg></a></div>
+    <div><div class="state">focus-visible</div><a class="btn btn-p f">Request dossier <svg><use href="#i-arrow"/></svg></a></div>
+    <div><div class="state">active</div><a class="btn btn-p a">Request dossier <svg><use href="#i-arrow"/></svg></a></div>
+    <div><div class="state">disabled</div><a class="btn btn-p d">Request dossier</a></div>
+    <div><div class="state">loading</div><a class="btn btn-p l">Sending enquiry</a></div>
+  </div>
+  <div class="grid" style="grid-template-columns:repeat(6,auto);justify-content:start;gap:20px 28px;margin-top:22px">
+    <div><div class="state">Secondary · default</div><a class="btn btn-s">View all plots</a></div>
+    <div><div class="state">hover</div><a class="btn btn-s h">View all plots</a></div>
+    <div><div class="state">Text link · default</div><a class="tlink">Open dossier <svg><use href="#i-arrow"/></svg></a></div>
+    <div><div class="state">hover (underline draws)</div><a class="tlink h">Open dossier <svg><use href="#i-arrow"/></svg></a></div>
+    <div style="background:var(--night);padding:14px 16px"><div class="state" style="color:var(--on-night-3)">On night</div><div class="row" style="gap:12px"><a class="btn btn-dark-p">Enquire</a><a class="btn btn-dark-s">Our approach</a></div></div>
+  </div>
+
+  <div class="lab" style="margin-top:40px">Fields — 52px, 1px strong border (3.5:1), 16px text, label above, never placeholder-as-label</div>
+  <div class="grid" style="grid-template-columns:repeat(4,1fr);gap:28px">
+    <div class="fld"><label>Full name <i>(required)</i></label><input class="inp" placeholder="As on your ID"><span class="msg">Default</span></div>
+    <div class="fld"><label>Phone <i>(required)</i></label><input class="inp f" value="+91 98765 4"><span class="msg">Focus · 2px ring, offset 2px</span></div>
+    <div class="fld"><label>Email <i>(required)</i></label><input class="inp e" value="name@domain"><span class="msg e"><svg><use href="#i-alert"/></svg>Enter a valid email address, e.g. name@domain.com.</span></div>
+    <div class="fld"><label>Region</label><input class="inp d" value="Locked after submit" disabled><span class="msg">Disabled</span></div>
+  </div>
+  <div class="grid" style="grid-template-columns:repeat(4,1fr);gap:28px;margin-top:24px">
+    <div class="fld"><label>Interested in</label><select class="inp sel"><option>Aranya Ridge Terraces</option></select><span class="msg">Select · custom chevron, native menu</span></div>
+    <div class="fld" style="grid-column:span 2"><label>Message <i>(optional)</i></label><textarea class="inp" style="height:84px;padding:14px 16px;font-family:var(--sans)" placeholder="Plot size, timing, questions"></textarea></div>
+    <div class="fld"><label>Consent</label><label style="display:flex;gap:12px;font:400 15px/1.4 var(--sans);align-items:flex-start"><span style="width:24px;height:24px;border:1px solid var(--line-strong);background:var(--paper);flex:none;display:grid;place-items:center"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#98400F" stroke-width="2"><path d="M4 10.5l4 4 8-9"/></svg></span>I agree to be contacted about this enquiry.</label></div>
+  </div>
+
+  <div class="lab" style="margin-top:44px">Badges · status</div>
+  <div class="row"><span class="bdg">Sample parcel</span><span class="bdg cl">Open for enquiry</span><span class="bdg dk">Concept — not for sale</span><span class="bdg ol">Available</span><span class="bdg" style="border-style:dashed">Reserved</span></div>
+
+  <div class="lab" style="margin-top:44px">Property card · whole card is one link · 3:2 media · specs as a definition list · price is explicit</div>
+  <div class="grid" style="grid-template-columns:repeat(3,1fr);gap:28px">
+    <article class="card"><div class="ph"><img src="../../../public/images/plots/aranya-ridge.webp" alt=""><span class="bdg">Sample parcel</span></div><div class="bd"><span class="ovl">P-01 · Residential plots</span><h3>Aranya Ridge Terraces</h3><span class="loc">Highland terrace · North Hillcrest corridor (sample)</span><dl class="specs"><div><dt>Plot size</dt><dd>4,800 sq. ft.</dd></div><div><dt>Dimensions</dt><dd>60 × 80 ft</dd></div><div><dt>Facing</dt><dd>East</dd></div></dl><div class="price"><b>Price on request</b><a class="tlink h" style="padding:10px 0">View dossier <svg><use href="#i-arrow"/></svg></a></div></div></article>
+    <article class="card"><div class="ph"><img src="../../../public/images/plots/vatika-banyan.webp" alt=""><span class="bdg">Sample parcel</span></div><div class="bd"><span class="ovl">P-02 · Corner parcels</span><h3>Vatika Banyan Corner</h3><span class="loc">Wooded corner · East Grove sector (sample)</span><dl class="specs"><div><dt>Plot size</dt><dd>3,600 sq. ft.</dd></div><div><dt>Dimensions</dt><dd>60 × 60 ft</dd></div><div><dt>Facing</dt><dd>North-east</dd></div></dl><div class="price"><b>Price on request</b><a class="tlink" style="padding:10px 0">View dossier <svg><use href="#i-arrow"/></svg></a></div></div></article>
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div class="slot"><span class="ovl">Client to provide</span><p><b>Testimonial</b> — quote, name, role, and written permission to publish. Shown here only in preview mode; hidden in live mode.</p></div>
+      <div class="slot"><span class="ovl">Client to provide</span><p><b>Registration &amp; legal IDs</b> — RERA number(s), CIN / entity name, registered address.</p></div>
+      <div class="row" style="gap:12px;margin-top:4px"><span class="chip">Format: Corner parcels <svg><use href="#i-close"/></svg></span><span class="chip">Size: 3,000–5,000 sq. ft. <svg><use href="#i-close"/></svg></span><a class="tlink" style="padding:6px 0">Clear all</a></div>
+      <div class="pg"><span>‹</span><span class="on">1</span><span>2</span><span>3</span><span>›</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BOARD 3 — hero compositions ============ -->
+<section class="board" id="b3">
+  <div class="sec-title">3VENI SPHERE · V2 design board · 03 Hero &amp; layout concept</div>
+  <div class="lab">Desktop 1440 — full-bleed plate, text on the scrimmed left, docked search that overlaps the fold edge (native GET form → /projects?…)</div>
+  <div class="hero" id="heroD">
+    <img class="bg" src="../../../public/images/plots/aranya-ridge.webp" alt="">
+    <div class="scrim"></div>
+    <div class="hdr">
+      <div class="brand"><i><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="none" stroke="#98400F" stroke-width="1.5"/><path d="M12 4c3 3 3 5 0 8-3-3-3-5 0-8zM20 12c-3 3-5 3-8 0 3-3 5-3 8 0zM12 20c-3-3-3-5 0-8 3 3 3 5 0 8zM4 12c3-3 5-3 8 0-3 3-5 3-8 0z" fill="#41490D"/></svg></i>3VENI SPHERE</div>
+      <nav class="nav"><a>Plots</a><a>Buyer’s guide</a><a>Future homes</a><a>About</a><a>Contact</a></nav>
+      <a class="btn btn-dark-p" style="height:44px">Enquire <svg><use href="#i-arrow"/></svg></a>
+    </div>
+    <div class="copy">
+      <span class="ovl">Contoured residential land plots</span>
+      <h1>Quiet earth. Enduring architecture.</h1>
+      <p class="lead">3VENI SPHERE curates contoured residential land plots and future living environments — shaped for transparent ownership, natural terrain harmony, and generational confidence.</p>
+      <div class="row" style="gap:28px"><a class="btn btn-p">Explore plots <svg><use href="#i-arrow"/></svg></a><a class="tlink" style="color:var(--on-night)">Our approach <svg><use href="#i-arrow"/></svg></a></div>
+    </div>
+    <div class="plate">Plate 01 — Aranya Ridge Terraces<br>Sample parcel · 4,800 sq. ft.</div>
+    <div class="srch">
+      <div class="c"><span>Format</span><b>All formats <svg width="16" height="16"><use href="#i-down"/></svg></b></div>
+      <div class="c"><span>Plot size</span><b>Any size <svg width="16" height="16"><use href="#i-down"/></svg></b></div>
+      <div class="c"><span>Terrain</span><b>Any terrain <svg width="16" height="16"><use href="#i-down"/></svg></b></div>
+      <div class="go">Find plots</div>
+    </div>
+  </div>
+
+  <div class="lab" style="margin-top:44px">Header states — transparent over the hero, solid ivory on scroll and on every inner page</div>
+  <div class="hdr-solid"><div class="brand" style="color:var(--ink)"><i style="background:#fff;border:1px solid var(--hairline)"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="none" stroke="#98400F" stroke-width="1.5"/><path d="M12 4c3 3 3 5 0 8-3-3-3-5 0-8zM20 12c-3 3-5 3-8 0 3-3 5-3 8 0zM12 20c-3-3-3-5 0-8 3 3 3 5 0 8zM4 12c3-3 5-3 8 0-3 3-5 3-8 0z" fill="#41490D"/></svg></i>3VENI SPHERE</div><nav class="nav"><a class="on">Plots</a><a>Buyer’s guide</a><a>Future homes</a><a>About</a><a>Contact</a></nav><a class="btn btn-p" style="height:44px">Enquire <svg><use href="#i-arrow"/></svg></a></div>
+
+  <div class="lab" style="margin-top:44px">Mobile 390 — image first, type on paper (no text over photography), single full-width action, stacked search</div>
+  <div class="row" style="align-items:flex-start;gap:40px">
+    <div class="mob" id="heroM">
+      <div class="mh"><div class="brand" style="font-size:12px"><i style="width:32px;height:32px;background:#fff;border:1px solid var(--hairline)"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="none" stroke="#98400F" stroke-width="1.5"/><path d="M12 4c3 3 3 5 0 8-3-3-3-5 0-8zM20 12c-3 3-5 3-8 0 3-3 5-3 8 0zM12 20c-3-3-3-5 0-8 3 3 3 5 0 8zM4 12c3-3 5-3 8 0-3 3-5 3-8 0z" fill="#41490D"/></svg></i>3VENI SPHERE</div><span style="display:grid;gap:6px;width:24px"><i style="height:1.5px;background:var(--ink)"></i><i style="height:1.5px;background:var(--ink)"></i></span></div>
+      <div class="mi"><img src="../../../public/images/plots/aranya-ridge.webp" alt=""></div>
+      <div class="cp">Plate 01 — Aranya Ridge Terraces · Sample parcel</div>
+      <div class="tx"><span class="ovl">Contoured residential land plots</span><h1>Quiet earth. Enduring architecture.</h1><p class="lead">Contoured residential land plots and future living environments, shaped for transparent ownership and generational confidence.</p><a class="btn btn-p">Explore plots <svg><use href="#i-arrow"/></svg></a></div>
+      <div class="sf"><div class="fld"><label>Format</label><div class="inp sel" style="display:flex;align-items:center">All formats</div></div><div class="fld"><label>Plot size</label><div class="inp sel" style="display:flex;align-items:center">Any size</div></div><a class="btn btn-s" style="width:100%">Find plots</a></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:28px">
+      <div class="dark"><span class="ovl">Method</span><div style="font:300 52px/1.05 var(--serif);letter-spacing:-.02em;margin:14px 0 36px;max-width:16ch">Land is read before it is drawn.</div>
+        <div class="cols3"><div><div class="n">01</div><h4>Contour-led selection</h4><p>Natural drainage, elevation sightlines and native shade canopy evaluated before any boundary is proposed.</p></div><div><div class="n">02</div><h4>Unclouded clarity</h4><p>Straightforward dimensions, frontage widths and factual disclosures from the first enquiry.</p></div><div><div class="n">03</div><h4>Land today, form tomorrow</h4><p>Hold open, well-sited earth now while exploring architectural possibilities at your family’s pace.</p></div></div></div>
+      <div style="font:400 14px/1.6 var(--sans);color:var(--ink-3);max-width:70ch">Dark band: on-night 15:1 · on-night-2 9.4:1 · numerals in brass-soft 10.4:1 (the V1 gold-on-olive 3.7:1 failure is designed out). Principles are existing client copy, regrouped — nothing invented.</div>
+    </div>
+  </div>
+</section>
+</body>
+</html>

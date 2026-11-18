@@ -1,91 +1,82 @@
-# 03 — Technical SEO Audit Report
+# 03 — SEO Audit (V1, production build)
 
-**Audited Environment:** Production Build (`next build` + `next start` on port 5174)  
-**Auditor:** Lead Technical SEO Architect  
-**Methodology:** Full-site DOM extraction, server-rendered HTML payload parsing (pre-hydration), sitemap and robots validation, Open Graph tag verification, Schema.org JSON-LD structural validation, and image attribute inspection.
+Method: `next build` → `next start`; raw HTML fetched with `fetch()` (equivalent to View Source, no JS executed) for every route; Lighthouse SEO run on `/`, `/projects`, `/projects/aranya-ridge-terraces` (mobile + desktop); JSON-LD parsed with `JSON.parse`; `robots.txt` / `sitemap.xml` fetched.
 
----
+## SEO score: **6 / 10**
 
-## 1. Master Page-by-Page Technical SEO Ledger
+**Why not higher:** The technical foundation is genuinely good (SSG pages, unique titles/descriptions, canonical, OG/Twitter, sitemap, robots, BreadcrumbList, FAQPage) and Lighthouse SEO is **100** everywhere. But Lighthouse does not test what matters to a real-estate business, and on those V1 is weak: the canonical/sitemap/OG domain is a **hard-coded unverified fallback** (`https://3venisphere.com`), `/contact` ships **no `<h1>` and no form in the server HTML**, there is **no favicon**, listing structured data is `Place` (not `RealEstateListing`/`Offer`), there is **no NAP** (name-address-phone) at all, only 5 thin listing pages, no location pages and a single guide.
 
-| URL Route | HTTP Status | `<title>` Tag | Title Length | Meta Description | Desc Length | Single `<h1>`? | Canonical Link | Open Graph Tags | SSR Confirmed? | Schema.org JSON-LD |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `/` | 200 OK | 3VENI SPHERE — Invest With Confidence \| Plotted Land & Living Spaces | 72 chars | 3VENI SPHERE curates contoured residential land plots and future architectural living environments with transparent documentation and generational clarity. | 155 chars | **Yes** ("Quiet Earth. Enduring Architecture.") | `https://3venisphere.com` | Complete (Title, Desc, Image, URL) | **Yes** (9,081 chars raw text) | `Organization`, `WebSite` |
-| `/about` | 200 OK | About 3VENI SPHERE — Land Stewardship & Architectural Restraint | 64 chars | Learn about 3VENI SPHERE's commitment to patient land development, environmental harmony, and generational value preservation. | 129 chars | **Yes** ("Land Stewardship. Architectural Restraint.") | `https://3venisphere.com/about` | Complete | **Yes** | `Organization`, `WebSite` |
-| `/projects` | 200 OK | Curated Land Parcels & Estates — 3VENI SPHERE Projects | 55 chars | Explore available contoured residential land plots and private estate parcels with clear legal titles and architectural masterplans. | 134 chars | **Yes** ("Curated Land Parcels & Estates.") | `https://3venisphere.com/projects` | Complete | **Yes** | `Organization`, `WebSite` |
-| `/projects/aranya-ridge-terraces` | 200 OK | Aranya Ridge Terraces — Curated Residential Land Plot \| 3VENI SPHERE | 70 chars | Discover Aranya Ridge Terraces: an elevated east-facing parcel with panoramic valley vistas, clear title documentation, and architectural covenants. | 148 chars | **Yes** ("Aranya Ridge Terraces") | `https://3venisphere.com/projects/aranya-ridge-terraces` | Complete | **Yes** | `Place` *(Suboptimal)* |
-| `/projects/vatika-banyan-corner` | 200 OK | Vatika Banyan Corner — Curated Residential Land Plot \| 3VENI SPHERE | 69 chars | Discover Vatika Banyan Corner: a north-east facing corner parcel anchored by heritage trees, private cul-de-sac entry, and generational clarity. | 145 chars | **Yes** ("Vatika Banyan Corner") | `https://3venisphere.com/projects/vatika-banyan-corner` | Complete | **Yes** | `Place` *(Suboptimal)* |
-| `/projects/shila-laterite-crest` | 200 OK | Shila Laterite Crest — Curated Residential Land Plot \| 3VENI SPHERE | 69 chars | Discover Shila Laterite Crest: an elevated ridge-top plot with natural rock contours, sunset vistas, and sustainable architectural potential. | 142 chars | **Yes** ("Shila Laterite Crest") | `https://3venisphere.com/projects/shila-laterite-crest` | Complete | **Yes** | `Place` *(Suboptimal)* |
-| `/projects/taru-ochre-grove` | 200 OK | Taru Ochre Grove — Curated Residential Land Plot \| 3VENI SPHERE | 64 chars | Discover Taru Ochre Grove: a sheltered woodland sanctuary parcel with rich laterite soil, mature timber canopies, and serene microclimate. | 139 chars | **Yes** ("Taru Ochre Grove") | `https://3venisphere.com/projects/taru-ochre-grove` | Complete | **Yes** | `Place` *(Suboptimal)* |
-| `/projects/prana-valley-sanctuary` | 200 OK | Prana Valley Sanctuary — Curated Residential Land Plot \| 3VENI SPHERE | 71 chars | Discover Prana Valley Sanctuary: a peaceful valley-floor parcel framed by gentle contours, seasonal stream buffers, and natural breeze paths. | 142 chars | **Yes** ("Prana Valley Sanctuary") | `https://3venisphere.com/projects/prana-valley-sanctuary` | Complete | **Yes** | `Place` *(Suboptimal)* |
-| `/future-homes` | 200 OK | Future Homes & Living Concepts — 3VENI SPHERE Architecture | 59 chars | Envision future residential concepts: climate-responsive villas, courtyard pavilions, and sustainable luxury living spaces designed for 3VENI plots. | 151 chars | **Yes** ("Future Homes & Living Concepts.") | `https://3venisphere.com/future-homes` | Complete | **Yes** | `Organization`, `WebSite` |
-| `/guides/land-buying-checklist` | 200 OK | Land Buying Due Diligence Checklist — 3VENI SPHERE Buyer Guide | 63 chars | Essential legal, environmental, and structural due-diligence checklist for purchasing plotted land and private residential parcels with confidence. | 150 chars | **Yes** ("Land Buying Due Diligence Checklist.") | `https://3venisphere.com/guides/land-buying-checklist` | Complete | **Yes** | `Organization`, `WebSite` *(Missing FAQPage)* |
-| `/contact` | 200 OK | Private Advisory & Site Visits — Contact 3VENI SPHERE | 54 chars | Schedule a private consultation or on-site terrain review with the 3VENI SPHERE advisory team. Discrete and transparent counsel. | 129 chars | **Yes** ("Private Advisory & Site Visits.") | `https://3venisphere.com/contact` | Complete | **Yes** | `Organization`, `ContactPoint` |
-| `/privacy-policy` | 200 OK | Privacy Policy — 3VENI SPHERE | 30 chars | Information privacy practices, customer data handling, and regulatory compliance policies for 3VENI SPHERE. | 108 chars | **Yes** ("Privacy Policy") | `https://3venisphere.com/privacy-policy` | Complete | **Yes** | None |
-| `/terms-and-conditions` | 200 OK | Terms and Conditions — 3VENI SPHERE | 36 chars | Terms, conditions, and legal guidelines governing the use of 3VENI SPHERE digital services and advisory inquiries. | 115 chars | **Yes** ("Terms and Conditions") | `https://3venisphere.com/terms-and-conditions` | Complete | **Yes** | None |
-| `/cookie-policy` | 200 OK | Cookie Policy — 3VENI SPHERE | 29 chars | Details on cookie usage, analytics measurement, and user consent management on 3VENI SPHERE. | 93 chars | **Yes** ("Cookie Policy") | `https://3venisphere.com/cookie-policy` | Complete | **Yes** | None |
-| `/non-existent-luxury-slug` | **404** Not Found | Page Not Found — 3VENI SPHERE | 29 chars | The requested property or page could not be located. | 53 chars | **Yes** ("404 — Page Not Found") | None | Fallback | **Yes** | None |
+| Sub-area | Score |
+|---|---|
+| Rendering / crawlability | 7 |
+| On-page (titles, meta, headings) | 7 |
+| Structured data | 4 |
+| Indexation controls (canonical, sitemap, robots) | 6 |
+| Content depth / internal linking | 4 |
+| Local / real-estate SEO signals | 2 |
 
----
+## Per-page table
 
-## 2. Heading Hierarchy & Structural Semantics
+| Page | Title (chars) | Meta desc (chars) | H1 count (raw HTML) | Heading skips | JSON-LD types | Imgs / missing alt / empty alt | Notes |
+|---|---|---|---|---|---|---|---|
+| `/` | 3VENI SPHERE — Invest With Confidence \| Plotted Land & Living Spaces (72) | 155 ✔ | 1 | none | Organization, WebSite | 18 / 0 / 4 (decorative thumbs) | Enquiry form **absent from source** (Suspense fallback "Loading enquiry form…"). H1 "Quiet Earth. Enduring Architecture." has no keyword. |
+| `/about` | About 3VENI SPHERE — Stewardship & Ethos \| 3VENI SPHERE (59) | 126 ✔ | 1 | none | Org, WebSite, BreadcrumbList | 4 / 0 / 0 | OK |
+| `/projects` | Projects & Land Plots — Interactive Masterplan \| … (65) | 131 ✔ | 1 | **h1→h3** | Org, WebSite, BreadcrumbList | 8 / 0 / 0 | Heading skip (`app/projects/page.tsx:38`) |
+| `/projects/aranya-ridge-terraces` | Aranya Ridge Terraces — 4,800 sq. ft. \| 3VENI SPHERE (52) | 156 ✔ | 1 | none | + **Place** | 8 / 0 / 0 | No price, no address, no `Offer` |
+| `/projects/vatika-banyan-corner` | … 3,600 sq. ft. (51) | 145 ✔ | 1 | none | + Place | 7 / 0 / 0 | |
+| `/projects/shila-laterite-crest` | … 6,200 sq. ft. (51) | 138 ✔ | 1 | none | + Place | 7 / 0 / 0 | |
+| `/projects/prana-valley-sanctuary` | … 10,890 sq. ft. (0.25 Acre) (66) | 141 ✔ | 1 | none | + Place | 7 / 0 / 0 | |
+| `/projects/taru-ochre-enclave` | … 2,800 sq. ft. (49) | 147 ✔ | 1 | none | + Place | 7 / 0 / 0 | |
+| `/future-homes` | Future Homes Collection — Coming Soon \| … (52) | 153 ✔ | 1 | none | Org, WebSite, Breadcrumb | 5 / 0 / 0 | Indexed page for non-purchasable concepts |
+| `/guides/land-buying-checklist` | Land Buying Checklist & Plot Due Diligence Guide \| … (67) | 164 (slightly long) | 1 | none | + **FAQPage** | 2 / 0 / 0 | Best SEO page; static content, 4.4k chars |
+| `/contact` | Contact & Advisory Enquiry \| 3VENI SPHERE (45) | 120 ✔ | **0** ❌ | n/a | Org, WebSite, Breadcrumb | 2 / 0 / 0 | **Only ~764 chars of text in HTML**; H1 + form are client-rendered (`<template data-dgst>` bailout) |
+| `/privacy-policy` | Privacy Policy \| … (29) | 117 | 1 | none | Org, WebSite, Breadcrumb | 2 / 0 / 0 | Indexable thin page |
+| `/cookie-policy` | Cookie Policy \| … (28) | 124 | 1 | none | same | 2 / 0 / 0 | |
+| `/terms-and-conditions` | Terms and Conditions \| … (35) | 120 | 1 | none | same | 2 / 0 / 0 | |
+| `/<missing>` | Page Not Found \| … (29) | 71 | 1 | h1→h3 | Org, WebSite | 2 / 0 / 0 | **HTTP 404 ✔**, `robots: noindex` ✔; canonical points to `/404` |
 
-### Hierarchy Verification
-- **Every page contains exactly one `<h1>` tag.** No page has missing or multiple `<h1>` elements.
-- **Sequential Nesting:** `<h2>` and `<h3>` tags follow a logical cascade across all informational routes.
-- **Heading Content Quality:** Headings are descriptive and avoid empty spacer tags (`<h2></h2>`).
+All 15 pages: `<html lang="en">` ✔, semantic landmarks (`header`, `nav`, `main`, `section`, `article`, `footer`) ✔, `og:*` ×10 and `twitter:card=summary_large_image` ✔, `robots: index, follow` ✔, image `width`/`height` or `fill` ✔ (0 images without dimensions), 16/18 images below the fold use `loading="lazy"` ✔.
 
-### Semantic HTML Tags
-Across all 14 evaluated routes:
-- `<header>`: Present and consistently wraps navigation landmarks.
-- `<nav>`: Present with appropriate `aria-label="Main Navigation"` or equivalent landmark attributes.
-- `<main id="main-content">`: Present on all layouts, enabling skip-to-content accessibility patterns.
-- `<section>`: Used extensively to partition thematic content zones.
-- `<article>`: Utilized for property detail listings and editorial guide sections.
-- `<footer>`: Present across all routes containing regulatory disclaimers and secondary navigation.
+## Site-wide findings
 
----
+### 1. 🔴 Canonical / sitemap / OG all point at an unverified placeholder domain
+`config/siteConfig.ts:178` `DEFAULT_CANONICAL_FALLBACK = 'https://3venisphere.com'` is used whenever `NEXT_PUBLIC_SITE_URL` is empty (it is, in `.env.example` and in this build). Every `canonical`, `og:url`, `og:image`, `sitemap.xml` `<loc>`, JSON-LD `url` and `robots.txt` Sitemap line emits that domain (verified in raw HTML and `/sitemap.xml`). If the production domain differs, search engines are told to index someone else's/non-existent URLs.
 
-## 3. Image SEO & Media Attributes
+### 2. 🔴 `/contact` has no `<h1>` and no form in the server HTML
+`EnquirySection` wraps a `useSearchParams()` consumer in `<Suspense>` (`components/sections/EnquirySection.tsx:594-606`). Static prerender therefore emits `Loading enquiry form...` and a `BAILOUT_TO_CLIENT_SIDE_RENDERING` template; H1 and all form copy only exist after hydration. The same happens to the home page's enquiry section. Google can render JS, but this is the page that should rank for "contact / enquire".
 
-- **Total Images Detected across Homepage:** 18 images
-- **Images Missing `alt` Attributes:** **4 images** on the homepage render with empty or missing `alt` attributes (primarily decorative background spans and decorative icons).
-- **Format Delivery:** Modern WebP format utilized across all property hero shots and parcel photography.
-- **Image Dimensions:** Most Next.js `<Image>` tags declare explicit `width` and `height` properties or use `fill` with responsive `sizes` definitions, minimizing layout shift.
+### 3. 🔴 No favicon
+`/favicon.ico` → 404, no `<link rel="icon">`, no `apple-touch-icon`, no web manifest (all 404). Browser tab shows a blank globe; SERP favicon will be missing; console shows a 404 error on every first load.
 
----
+### 4. 🟠 Structured data is too generic for real estate
+- Present & valid JSON (all blocks parse): `Organization` (name, url, logo only — **no telephone, address, sameAs, areaServed**), `WebSite` (no `SearchAction`), `BreadcrumbList` (inner pages), `FAQPage` (guide), `Place` (plots, `lib/structuredData.ts:419-450`).
+- Missing: `RealEstateAgent`/`RealEstateListing`/`Residence`/`Offer`/`LocalBusiness`, price, geo, address.
+- `Organization` + `WebSite` are duplicated on every page via `app/layout.tsx:92-93` (harmless but bloats).
 
-## 4. Crawl Infrastructure: Robots.txt & XML Sitemap
+### 5. 🟠 Content depth and architecture
+- Only 5 indexable listings, **all labelled "Sample Typology" with no address, no price** — nothing for a buyer to search for ("plots in <town>").
+- No location/neighbourhood pages, no blog, one guide; URL structure itself is clean (`/projects/<slug>`, `/guides/<slug>`) ✔.
+- Homepage H1 and title mention no place name or searchable keyword ("plots for sale in <city>").
+- All 15 pages share the same OG image except plots (`/images/plots/aranya-ridge.webp`, 1376×768 raw photo, not a 1200×630 branded card).
+- Legal pages are in the sitemap at priority 0.3 — fine; `/future-homes` (non-purchasable) at 0.7 is generous.
 
-### `robots.txt` Verification
-- **URL:** `http://localhost:5174/robots.txt`
-- **HTTP Status:** `200 OK`
-- **Content:**
-  ```text
-  User-Agent: *
-  Allow: /
-  Disallow: /api/
+### 6. 🟡 Rendering method
+✔ Excellent: every page is statically prerendered (`○`/`●` in the build output), real content is in the HTML, `generateStaticParams` for 5 plots. The only SSR gap is the Suspense-wrapped enquiry section (finding 2).
 
-  Sitemap: https://3venisphere.com/sitemap.xml
-  ```
-- **Verdict:** Valid syntax. Correctly disallows internal Next.js API handler routes while allowing all search spiders to crawl content pages.
+### 7. robots.txt / sitemap.xml
+- `robots.txt` ✔: `User-Agent: *`, `Allow: /`, `Disallow: /api/`, Sitemap line (placeholder domain).
+- `sitemap.xml` ✔: 14 URLs (9 static + 5 plots), `lastmod` hard-coded `2026-11-17T00:00:00.000Z` (`app/sitemap.ts:6`) — every page claims it changed on one fixed date.
 
-### `sitemap.xml` Verification
-- **URL:** `http://localhost:5174/sitemap.xml`
-- **HTTP Status:** `200 OK`
-- **Total Indexed URLs:** 14 URLs
-- **Validation:** Valid XML syntax with `lastmod`, `changefreq`, and `priority` directives defined per route tier (homepage = 1.0, projects = 0.9, individual parcels = 0.8, legal = 0.3).
+### 8. Internal linking
+Strong between plots (footer lists all 4 formats; detail pages link two neighbours; hero links to plots; guide links to /projects and /contact). No contextual links from guide body text to listings; no location hubs.
 
----
+## Lighthouse SEO
+`/`, `/projects`, `/projects/aranya-ridge-terraces`: **100 / 100 / 100** (mobile and desktop). Lighthouse cannot detect findings 1–5 — treat the 100 as a hygiene pass, not a ranking forecast.
 
-## 5. Structured Data (JSON-LD) Deep Dive & Deficiencies
-
-While the site earns a technical Lighthouse SEO score of **100/100**, the structured data schema implementation suffers from significant real-estate-specific deficiencies:
-
-1. **Missing `RealEstateListing` & `Offer` Schema on Project Pages:**
-   - On individual property parcel pages (`/projects/*`), the site outputs a generic Schema.org `@type: "Place"`.
-   - In luxury real estate, Google's Real Estate rich results require schema markup conforming to `RealEstateListing` or `Residence` with embedded `Offer` (price, priceCurrency, availability), `geo` (`GeoCoordinates`), and `address` (`PostalAddress`).
-2. **Missing `BreadcrumbList` Schema:**
-   - Neither the listing directory (`/projects`) nor individual parcels declare Schema.org `BreadcrumbList`. Breadcrumbs are essential for Google to display clean hierarchical breadcrumb trails in SERP snippets.
-3. **Missing `FAQPage` Schema on Due-Diligence Guide:**
-   - The checklist guide at `/guides/land-buying-checklist` covers crucial buyer questions regarding title deeds, encumbrances, and RERA approvals, but does not emit `FAQPage` schema. Implementing this would capture Google SERP accordion snippet real estate.
+## What V2 must do (SEO)
+1. Set `NEXT_PUBLIC_SITE_URL` to the real https domain and fail the build if it is missing.
+2. Move `useSearchParams` into a tiny client child; keep H1/copy in SSR on `/contact` and `/`.
+3. Add `app/icon.png` + `apple-icon.png` + manifest.
+4. `RealEstateListing` + `Offer` (price) + `Residence`/`Place` with `geo`/`address`; `RealEstateAgent`/`LocalBusiness` with NAP, `sameAs`.
+5. Add keyword/location to H1 & titles; create location and guide hubs; real per-page OG cards (1200×630).
+6. Real `lastmod` from content timestamps; drop thin pages from sitemap or `noindex` them.
