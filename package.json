@@ -5,16 +5,18 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "build": "next build",
+    "build": "npm run check:launch && next build",
     "start": "node scripts/start.mjs",
     "clean": "rm -rf .next out",
-    "lint": "eslint . && tsc --noEmit",
-    "test": "tsx --test lib/__tests__/*.test.ts"
+    "lint": "eslint . && tsc --noEmit && node scripts/check-tokens.mjs",
+    "test": "node --import tsx --import ./scripts/register-assets.mjs --test lib/__tests__/*.test.ts",
+    "check:launch": "node --import tsx --import ./scripts/register-assets.mjs scripts/check-launch.ts",
+    "content:report": "node --import tsx --import ./scripts/register-assets.mjs scripts/check-launch.ts --report"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.3.5",
     "@types/nodemailer": "^8.0.2",
-    "eslint": "^10.15.0",
+    "eslint": "^9.39.5",
     "eslint-config-next": "^16.4.6",
     "gsap": "^3.15.1",
     "lucide-react": "^0.546.0",

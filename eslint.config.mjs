@@ -6,6 +6,8 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   {
+    // the jsx-a11y plugin is registered by eslint-config-next only for source files; scope our overrides the same way
+    files: ['**/*.{js,jsx,mjs,ts,tsx,mts,cts}'],
     rules: {
       'jsx-a11y/anchor-is-valid': 'warn',
       'jsx-a11y/aria-props': 'error',
@@ -22,6 +24,7 @@ const eslintConfig = defineConfig([
     'dist/**',
     'next-env.d.ts',
     'scripts/**',
+    'scratch/**',
   ]),
 ]);
 
