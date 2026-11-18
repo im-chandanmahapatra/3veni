@@ -1,86 +1,51 @@
-import type { Metadata } from 'next';
-import { SITE_CONFIG } from '@/config/siteConfig';
-import { CookieConsentProvider } from '@/context/CookieConsentContext';
-import Navbar from '@/components/navigation/Navbar';
-import Footer from '@/components/navigation/Footer';
-import CookieBanner from '@/components/consent/CookieBanner';
-import CookiePreferencesModal from '@/components/consent/CookiePreferencesModal';
-import ScrollProgressBar from '@/components/ui/ScrollProgressBar';
-import JsonLd from '@/components/ui/JsonLd';
-import { buildOrganizationJsonLd, buildWebSiteJsonLd } from '@/lib/structuredData';
-import MotionRootProvider from '@/components/motion/MotionRootProvider';
-import BrandIntroCurtain from '@/components/motion/BrandIntroCurtain';
+import type { Metadata, Viewport } from 'next';
 import '@/styles/globals.css';
 import { fontClassName } from './fonts';
+import { CookieConsentProvider } from '@/context/CookieConsentContext';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+import ConsentBar from '@/components/layout/ConsentBar';
+import PreferencesDialog from '@/components/layout/PreferencesDialog';
+import JsonLd from '@/components/seo/JsonLd';
+import { getSiteUrl } from '@/lib/config';
+import { getSite } from '@/lib/site';
+import { organizationJsonLd, websiteJsonLd } from '@/lib/schema';
+
+const site = getSite();
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_CONFIG.siteUrl),
+  metadataBase: new URL(getSiteUrl().url),
+  applicationName: site.brandName,
   title: {
-    default: `${SITE_CONFIG.brandName} — ${SITE_CONFIG.tagline}`,
-    template: `%s | ${SITE_CONFIG.brandName}`,
+    default: `${site.brandName} — ${site.tagline}`,
+    template: `%s | ${site.brandName}`,
   },
-  description: SITE_CONFIG.description,
-  openGraph: {
-    type: 'website',
-    locale: 'en_IN',
-    siteName: SITE_CONFIG.brandName,
-    title: `${SITE_CONFIG.brandName} — ${SITE_CONFIG.tagline}`,
-    description: SITE_CONFIG.description,
-    images: [
-      {
-        url: SITE_CONFIG.heroFallbackPath,
-        width: 1376,
-        height: 768,
-        alt: `${SITE_CONFIG.brandName} — Quiet Earth. Enduring Architecture.`,
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: `${SITE_CONFIG.brandName} — ${SITE_CONFIG.tagline}`,
-    description: SITE_CONFIG.description,
-    images: [SITE_CONFIG.heroFallbackPath],
-  },
+  description: site.description,
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#F7F3EC',
+};
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={fontClassName}
-    >
-      <body suppressHydrationWarning className="min-h-screen flex flex-col bg-[#F6F1E7] text-[#24221E] antialiased selection:bg-[#98400F] selection:text-[#F6F1E7]">
-        <JsonLd data={buildOrganizationJsonLd()} />
-        <JsonLd data={buildWebSiteJsonLd()} />
-
-        <MotionRootProvider>
-          <CookieConsentProvider>
-            <a
-              href="#main-content"
-              className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2.5 focus:bg-[#98400F] focus:text-[#F6F1E7] focus:text-xs focus:font-semibold focus:uppercase focus:tracking-[0.1em] focus:shadow-xl"
-            >
-              Skip to main content
-            </a>
-
-            <ScrollProgressBar />
-            <BrandIntroCurtain />
-
-            <div id="app-shell" className="min-h-screen flex flex-col">
-              <Navbar />
-              <main id="main-content" className="flex-1">
-                {children}
-              </main>
-              <Footer />
-            </div>
-
-            <CookieBanner />
-            <CookiePreferencesModal />
-          </CookieConsentProvider>
-        </MotionRootProvider>
+    <html lang="en-IN" className={fontClassName}>
+      <body>
+        <a className="skip-link" href="#main">
+          Skip to main content
+        </a>
+        <CookieConsentProvider>
+          <Header brandName={site.brandName} channels={{ phone: site.phone, whatsapp: site.whatsapp, email: site.email }} />
+          <main id="main" tabIndex={-1}>
+            {children}
+          </main>
+          <Footer />
+          <ConsentBar />
+          <PreferencesDialog />
+        </CookieConsentProvider>
+        <JsonLd data={[organizationJsonLd(site), websiteJsonLd(site)]} />
       </body>
     </html>
   );

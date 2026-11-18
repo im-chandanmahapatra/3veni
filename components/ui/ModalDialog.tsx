@@ -14,6 +14,7 @@ export interface ModalDialogHandle {
  * top-layer stacking. Body scroll is locked in CSS via `html:has(dialog[open])`.
  */
 export default function ModalDialog({
+  id,
   label,
   className,
   children,
@@ -21,6 +22,7 @@ export default function ModalDialog({
   closeOnBackdrop = true,
   handle,
 }: {
+  id?: string;
   label: string;
   className?: string;
   children: ReactNode;
@@ -50,7 +52,7 @@ export default function ModalDialog({
   };
 
   return (
-    <dialog ref={ref} aria-label={label} className={className} onClose={onClose} onClick={onClick}>
+    <dialog ref={ref} id={id} aria-label={label} className={className} onClose={onClose} onClick={onClick}>
       {children}
     </dialog>
   );
