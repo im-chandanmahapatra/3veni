@@ -5,7 +5,7 @@ import { PRINCIPLES, STATEMENT } from '@/content/copy';
 /** Positioning statement + three principles (plan B3): the brand idea, once (audit H8). */
 export default function Principles() {
   return (
-    <section className="section" aria-labelledby="statement-title">
+    <section className="section section--defer" aria-labelledby="statement-title">
       <div className="wrap">
         <Reveal className="statement">
           <div className="statement__aside">

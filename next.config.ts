@@ -60,6 +60,8 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
     formats: ['image/avif', 'image/webp'],
+    // 75 is the default; 60 is used for the full-bleed hero, which sits under a scrim and is the LCP image
+    qualities: [60, 75],
     deviceSizes: [640, 750, 828, 1080, 1200, 1440],
     imageSizes: [40, 64, 96, 128, 256, 384],
   },

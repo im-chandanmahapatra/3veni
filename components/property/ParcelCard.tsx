@@ -16,19 +16,21 @@ interface ParcelCardProps {
   sizes: string;
   /** hide the spec list (compact stack) */
   dense?: boolean;
+  /** the LCP candidate of the page (first card of a listing): preload + fetchPriority high */
+  preload?: boolean;
 }
 
 /**
  * Property card (DESIGN §8.4): the whole card is ONE link (title anchor stretched over the card) — V1 had two
  * competing paths ("View Details" + "Quick Preview"). Specs are a definition list in tabular numerals; price is explicit.
  */
-export default function ParcelCard({ parcel, variant = 'default', as: Heading = 'h3', sizes, dense }: ParcelCardProps) {
+export default function ParcelCard({ parcel, variant = 'default', as: Heading = 'h3', sizes, dense, preload }: ParcelCardProps) {
   const lead = parcel.gallery[0]!;
   const price = parcel.price?.display ?? 'Price on request';
   return (
     <article className={['card', variant === 'compact' ? 'card--compact' : ''].filter(Boolean).join(' ')} data-testid={`plot-card-${parcel.slug}`}>
       <div className="card__media-wrap">
-        <Media src={lead.src} alt={lead.alt} sizes={sizes} ratio={variant === 'compact' ? 'fill' : '3/2'} focal={lead.focal} />
+        <Media src={lead.src} alt={lead.alt} sizes={sizes} ratio={variant === 'compact' ? 'fill' : '3/2'} focal={lead.focal} preload={preload} />
         <Badge className="card__badge">{STATUS_LABEL[parcel.status]}</Badge>
       </div>
       <div className="card__body">

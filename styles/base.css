@@ -19,6 +19,8 @@
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
     scroll-padding-top: 6rem;
+    /* focused or scrolled-to elements never end up under the docked consent bar (WCAG 2.4.11) */
+    scroll-padding-bottom: calc(var(--consent-h) + 1rem);
   }
 
   body {

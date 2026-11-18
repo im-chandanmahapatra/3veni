@@ -186,9 +186,9 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Sea
             </div>
           ) : (
             <ul className="listing-grid">
-              {pagination.items.map((p) => (
+              {pagination.items.map((p, i) => (
                 <li key={p.id}>
-                  <ParcelCard parcel={p} as="h2" sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw" />
+                  <ParcelCard parcel={p} as="h2" preload={i === 0} sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw" />
                 </li>
               ))}
             </ul>

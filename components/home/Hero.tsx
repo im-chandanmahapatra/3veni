@@ -15,7 +15,7 @@ export default function Hero() {
   return (
     <section className="hero" aria-labelledby="hero-title">
       <div className="hero__media">
-        <Media src={plate.src} alt={plate.alt} sizes="100vw" ratio="fill" focal={[0.5, 0.45]} preload quality={75} />
+        <Media src={plate.src} alt={plate.alt} sizes="100vw" ratio="fill" focal={[0.5, 0.45]} preload quality={60} />
       </div>
       <div className="hero__scrim" aria-hidden="true" />
 
