@@ -1,6 +1,6 @@
 import Image, { type StaticImageData } from 'next/image';
 
-export type MediaRatio = '3/2' | '16/9' | '4/5' | '1/1' | '21/9' | '16/10' | '5/4';
+export type MediaRatio = '3/2' | '16/9' | '4/5' | '1/1' | '21/9' | '16/10' | '5/4' | 'fill';
 
 interface MediaProps {
   src: StaticImageData;
@@ -24,7 +24,7 @@ interface MediaProps {
 export default function Media({ src, alt, sizes, ratio = '3/2', focal, preload, quality, className }: MediaProps) {
   const [fx, fy] = focal ?? [0.5, 0.5];
   return (
-    <div className={['media', className ?? ''].filter(Boolean).join(' ')} style={{ aspectRatio: ratio.replace('/', ' / ') }}>
+    <div className={['media', ratio === 'fill' ? 'media--fill' : '', className ?? ''].filter(Boolean).join(' ')} style={ratio === 'fill' ? undefined : { aspectRatio: ratio.replace('/', ' / ') }}>
       <Image
         src={src}
         alt={alt}

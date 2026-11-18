@@ -283,9 +283,9 @@ select.field__control {
 .card:hover { border-color: var(--color-line-strong); }
 .card:has(a:focus-visible) { outline: 2px solid var(--color-clay); outline-offset: 4px; }
 .card a:focus-visible { outline: none; }
-.card__media { position: relative; overflow: hidden; background: var(--color-sunken); aspect-ratio: 3 / 2; }
-.card__media img { transition: transform 0.7s var(--ease-out); }
-.card:hover .card__media img { transform: scale(1.025); }
+.card__media-wrap { position: relative; overflow: hidden; background: var(--color-sunken); }
+.card__media-wrap img { transition: transform 0.7s var(--ease-out); }
+.card:hover .card__media-wrap img { transform: scale(1.025); }
 .card__badge { position: absolute; left: 1rem; top: 1rem; z-index: 1; }
 .card__body { display: flex; flex: 1; flex-direction: column; gap: 0.875rem; padding: 1.5rem; }
 .card__title a::after { content: ""; position: absolute; inset: 0; z-index: 2; }
@@ -295,11 +295,11 @@ select.field__control {
 .card__cta .icon { width: 1rem; height: 1rem; transition: transform 0.18s var(--ease-out); }
 .card:hover .card__cta .icon { transform: translateX(3px); }
 .card--compact { flex-direction: row; }
-.card--compact .card__media { flex: 0 0 38%; aspect-ratio: auto; min-height: 11rem; }
+.card--compact .card__media-wrap { flex: 0 0 38%; min-height: 11rem; }
 .card--compact .card__body { padding: 1.25rem 1.5rem; }
 @media (max-width: 47.99rem) {
   .card--compact { flex-direction: column; }
-  .card--compact .card__media { flex-basis: auto; aspect-ratio: 3 / 2; min-height: 0; }
+  .card--compact .card__media-wrap { flex-basis: auto; aspect-ratio: 3 / 2; min-height: 0; }
 }
 
 /* ───────── Skeleton, client-content slot, reveal ───────── */
@@ -331,3 +331,5 @@ select.field__control {
 
 /* responsive image box (components/ui/Media.tsx) */
 .media { position: relative; width: 100%; overflow: hidden; background: var(--color-sunken); }
+
+.media--fill { position: absolute; inset: 0; height: 100%; }

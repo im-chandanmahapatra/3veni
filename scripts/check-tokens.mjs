@@ -35,8 +35,8 @@ const LEGACY = [
   'app/layout.tsx',
 ].filter(Boolean);
 
-// Files that legitimately need literal colour values (the web manifest cannot reference CSS variables).
-const ALLOW = ['app/manifest.ts'];
+// Files that legitimately need literal colour values: the web manifest and the last-resort global error page (both cannot rely on CSS variables).
+const ALLOW = ['app/manifest.ts', 'app/global-error.tsx'];
 
 const RULES = [
   { name: 'arbitrary hex colour', re: /(?:text|bg|border|from|via|to|fill|stroke|outline|ring|decoration|shadow|accent|caret|divide|placeholder)-\[#[0-9a-fA-F]{3,8}(?:\/\d+)?\]/ },

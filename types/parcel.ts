@@ -82,3 +82,15 @@ export interface Residence {
   summary: string;
   note: string;
 }
+
+/** A numbered photographic plate (home "terrain & light" mosaic). */
+export interface Plate {
+  id: string;
+  /** "Plate 01" */
+  number: string;
+  title: string;
+  caption: string;
+  src: StaticImageData;
+  alt: string;
+  focal?: readonly [number, number];
+}
