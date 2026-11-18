@@ -6,34 +6,8 @@ import { join, relative } from 'node:path';
 const ROOT = process.cwd();
 const SCAN = ['app', 'components'];
 const SKIP_DIRS = new Set(['node_modules', '.next', 'fonts']);
-// V1 leftovers that are deleted in the cleanup commit; they are the only paths allowed to violate the rules.
-const LEGACY = [
-  'components/sections/',
-  'components/navigation/',
-  'components/consent/',
-  'components/motion/',
-  'components/property/InteractivePlotMap.tsx',
-  'components/property/PlotDossierGallery.tsx',
-  'components/property/ProjectDetailModal.tsx',
-  'components/property/TerrainStudyGallery.tsx',
-  'components/ui/BrandMotifs.tsx',
-  'components/ui/EditorialCarousel.tsx',
-  'components/ui/ScrollProgressBar.tsx',
-  'components/ui/ScrollReveal.tsx',
-  'components/ui/JsonLd.tsx',
-  'app/template.tsx',
-  'app/not-found.tsx',
-  'app/about/',
-  'app/contact/',
-  'app/cookie-policy/',
-  'app/future-homes/',
-  'app/guides/land-buying-checklist/',
-  'app/privacy-policy/',
-  'app/projects/',
-  'app/terms-and-conditions/',
-  'app/page.tsx',
-  'app/layout.tsx',
-].filter(Boolean);
+// V1 leftovers were deleted in the cleanup commit; nothing is allowed to violate the rules any more.
+const LEGACY = [];
 
 // Files that legitimately need literal colour values: the web manifest and the last-resort global error page (both cannot rely on CSS variables).
 const ALLOW = ['app/manifest.ts', 'app/global-error.tsx'];

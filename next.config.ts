@@ -2,6 +2,15 @@ import type { NextConfig } from 'next';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
+/**
+ * Origins allowed to embed this site in an iframe (audit M12). Default: none but ourselves. Comma-separated list of
+ * https origins in EMBED_ALLOWED_ORIGINS (e.g. a preview tool); anything that is not an https origin is ignored.
+ */
+const embedOrigins = (process.env.EMBED_ALLOWED_ORIGINS ?? '')
+  .split(',')
+  .map((o) => o.trim())
+  .filter((o) => /^https:\/\/[a-z0-9*.-]+(:\d+)?$/i.test(o));
+
 const cspDirectives = [
   "default-src 'self'",
   isProduction
@@ -14,7 +23,9 @@ const cspDirectives = [
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
-  "frame-ancestors 'self' https://aistudio.google.com https://*.google.com",
+  // the click-to-load parcel map is the only third-party frame, and only after the visitor asks for it
+  "frame-src https://www.openstreetmap.org",
+  `frame-ancestors 'self'${embedOrigins.length ? ` ${embedOrigins.join(' ')}` : ''}`,
 ].join('; ');
 
 const securityHeaders = [
