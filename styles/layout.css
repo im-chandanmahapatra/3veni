@@ -5,7 +5,10 @@
   left: -9999px;
   top: 0.75rem;
   z-index: 100;
-  padding: 0.875rem 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 1.25rem;
   background: var(--color-clay);
   color: var(--color-paper);
   font: 600 0.8125rem/1 var(--font-sans);

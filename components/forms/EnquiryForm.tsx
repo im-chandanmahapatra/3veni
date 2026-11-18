@@ -1,6 +1,6 @@
 'use client';
 
-import { useId, useRef, useState, type FormEvent } from 'react';
+import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
 import Button from '@/components/ui/Button';
 import { SelectField, TextField, TextareaField } from '@/components/ui/Field';
 import Icon from '@/components/ui/Icon';
@@ -58,6 +58,11 @@ export default function EnquiryForm({
   const [phase, setPhase] = useState<Phase>('idle');
   const [result, setResult] = useState<EnquiryResponse | null>(null);
 
+  // move focus to the confirmation once it is on screen, so screen-reader and keyboard users land on the outcome
+  useEffect(() => {
+    if (phase === 'success') successRef.current?.focus();
+  }, [phase]);
+
   const id = (field: string) => `${idPrefix}-${field}`;
   const set = (field: keyof EnquiryValues) => (e: { target: { value: string } }) => {
     setValues((v) => ({ ...v, [field]: e.target.value }));
@@ -92,8 +97,6 @@ export default function EnquiryForm({
       setResult(body);
       if (body.status === 'delivered') {
         setPhase('success');
-        // move focus to the confirmation so screen-reader and keyboard users land on the outcome
-        window.setTimeout(() => successRef.current?.focus(), 0);
       } else if (body.status === 'validation_error' && body.fieldErrors) {
         setErrors(body.fieldErrors);
         setPhase('idle');

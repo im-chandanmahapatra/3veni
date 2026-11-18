@@ -361,3 +361,5 @@
 .dossier-aside .enquiry-actions .btn { width: 100%; }
 .dossier-aside__inner { grid-template-columns: minmax(0, 1fr); }
 .dossier-aside .enquiry-actions { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 64rem) { .dossier-grid > .dossier-aside { align-self: stretch; } }
+@media (max-width: 22.5rem) { .site-header .brand > span:not(.brand__mark) { display: none; } }
