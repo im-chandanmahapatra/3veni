@@ -35,6 +35,9 @@ const LEGACY = [
   'app/layout.tsx',
 ].filter(Boolean);
 
+// Files that legitimately need literal colour values (the web manifest cannot reference CSS variables).
+const ALLOW = ['app/manifest.ts'];
+
 const RULES = [
   { name: 'arbitrary hex colour', re: /(?:text|bg|border|from|via|to|fill|stroke|outline|ring|decoration|shadow|accent|caret|divide|placeholder)-\[#[0-9a-fA-F]{3,8}(?:\/\d+)?\]/ },
   { name: 'arbitrary pixel text size', re: /\btext-\[\d+(?:\.\d+)?px\]/ },
@@ -55,7 +58,7 @@ const problems = [];
 for (const base of SCAN) {
   for (const file of walk(join(ROOT, base))) {
     const rel = relative(ROOT, file).replaceAll('\\', '/');
-    if (LEGACY.some((p) => rel === p || rel.startsWith(p))) continue;
+    if (ALLOW.includes(rel) || LEGACY.some((p) => rel === p || rel.startsWith(p))) continue;
     const lines = readFileSync(file, 'utf8').split('\n');
     lines.forEach((line, i) => {
       for (const rule of RULES) if (rule.re.test(line)) problems.push(`${rel}:${i + 1}  ${rule.name}  →  ${line.trim().slice(0, 110)}`);

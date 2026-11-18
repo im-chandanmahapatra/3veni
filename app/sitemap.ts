@@ -1,36 +1,29 @@
 import type { MetadataRoute } from 'next';
-import { SITE_CONFIG } from '@/config/siteConfig';
-import { LAND_PLOTS } from '@/data/properties';
+import { absoluteUrl } from '@/lib/config';
+import { PARCELS } from '@/content/parcels';
+import { GUIDES } from '@/content/guides';
+
+/**
+ * Sitemap (audit M10): real `lastModified` per record (content `updatedAt`), no fixed date, no changefreq/priority
+ * (Google ignores both). Utility pages (legal, 404) and the thin /guides hub are intentionally omitted.
+ */
+const SITE_UPDATED = '2026-11-18';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date('2026-11-17T00:00:00.000Z');
+  const latest = (dates: string[]) => dates.sort().at(-1) ?? SITE_UPDATED;
+  const parcelsUpdated = latest(PARCELS.map((p) => p.updatedAt));
+  const guidesUpdated = latest(GUIDES.map((g) => g.updatedAt));
 
-  const staticRoutes: { path: string; priority: number; changeFrequency: 'weekly' | 'monthly' }[] = [
-    { path: '/', priority: 1.0, changeFrequency: 'weekly' },
-    { path: '/about', priority: 0.8, changeFrequency: 'monthly' },
-    { path: '/projects', priority: 0.9, changeFrequency: 'weekly' },
-    { path: '/future-homes', priority: 0.7, changeFrequency: 'monthly' },
-    { path: '/guides/land-buying-checklist', priority: 0.8, changeFrequency: 'monthly' },
-    { path: '/contact', priority: 0.8, changeFrequency: 'monthly' },
-    { path: '/privacy-policy', priority: 0.3, changeFrequency: 'monthly' },
-    { path: '/cookie-policy', priority: 0.3, changeFrequency: 'monthly' },
-    { path: '/terms-and-conditions', priority: 0.3, changeFrequency: 'monthly' },
+  const entries: MetadataRoute.Sitemap = [
+    { url: absoluteUrl('/'), lastModified: parcelsUpdated },
+    { url: absoluteUrl('/projects'), lastModified: parcelsUpdated },
+    ...PARCELS.map((p) => ({ url: absoluteUrl(`/projects/${p.slug}`), lastModified: p.updatedAt })),
+    ...GUIDES.map((g) => ({ url: absoluteUrl(`/guides/${g.slug}`), lastModified: g.updatedAt })),
+    { url: absoluteUrl('/about'), lastModified: SITE_UPDATED },
+    { url: absoluteUrl('/future-homes'), lastModified: SITE_UPDATED },
+    { url: absoluteUrl('/contact'), lastModified: SITE_UPDATED },
   ];
-
-  const plotRoutes = LAND_PLOTS.map((plot) => ({
-    url: new URL(`/projects/${plot.slug}`, SITE_CONFIG.siteUrl).toString(),
-    lastModified,
-    changeFrequency: 'weekly' as const,
-    priority: 0.85,
-  }));
-
-  return [
-    ...staticRoutes.map((route) => ({
-      url: new URL(route.path, SITE_CONFIG.siteUrl).toString(),
-      lastModified,
-      changeFrequency: route.changeFrequency,
-      priority: route.priority,
-    })),
-    ...plotRoutes,
-  ];
+  // the guides hub is listed only when it has real depth (it is noindex below 3 guides)
+  if (GUIDES.length >= 3) entries.push({ url: absoluteUrl('/guides'), lastModified: guidesUpdated });
+  return entries;
 }
