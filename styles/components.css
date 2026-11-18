@@ -309,6 +309,7 @@ select.field__control {
 .slot .t-overline { color: var(--color-ink-3); }
 .on-dark .slot { background: var(--color-night-raised); border-color: var(--color-night-line); }
 .on-dark .slot p { color: var(--color-on-night-2); }
+.on-dark .slot .t-overline { color: var(--color-brass-soft); }
 
 [data-reveal="pending"] { opacity: 0; transform: translateY(14px); }
 [data-reveal="shown"] { opacity: 1; transform: none; transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out); }
