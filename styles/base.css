@@ -1,0 +1,100 @@
+/* Base layer — resets on top of Tailwind preflight (DESIGN.md §4, §6, §10). */
+@layer base {
+  :root {
+    --focus: var(--color-clay);
+    --consent-h: 0px;
+    color-scheme: light;
+  }
+
+  /* surfaces that sit on photography or night need the light focus ring */
+  .on-dark {
+    --focus: var(--color-brass-soft);
+    color: var(--color-on-night);
+  }
+
+  html {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-canvas);
+    font-size: 1rem;
+    line-height: 1.65;
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* the consent bar sets --consent-h so content is never covered (audit H7) */
+    padding-bottom: var(--consent-h);
+  }
+
+  main {
+    flex: 1 0 auto;
+  }
+
+  main:focus {
+    outline: none;
+  }
+
+  ::selection {
+    background: var(--color-clay);
+    color: var(--color-paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img,
+  svg,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  /* native <dialog> open state locks page scroll without JavaScript (audit H6) */
+  html:has(dialog[open]) {
+    overflow: hidden;
+  }
+
+  /* no smooth scrolling anywhere: instant anchors, predictable back/forward restoration (audit M6) */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}

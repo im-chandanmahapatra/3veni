@@ -108,7 +108,7 @@ Usage ratio: **≥ 80 %** canvas/paper/sunken + ink · **≤ 12 %** `night` (one
 |---|---|---|---|
 | **Display / headings** | **Newsreader**, static optical size 72, weights 300 + 400 | Contemporary editorial serif with real optical sizing: sturdy hairlines at 66 px, crisp tabular-friendly figures at 36 px. Specimen vs V1's Cormorant (hairline-thin, weak at small sizes), Fraunces (heavy, soft), Bodoni Moda (cold; numerals fall apart), Instrument Serif (condensed, over-used), Libre Caslon (stiff). | ≈ 22 KB per weight (woff2, latin) |
 | **UI + body** | **Instrument Sans** 400–600 (variable) | Quiet, slightly open humanist grotesque that pairs with Newsreader on night and paper; clean numerals. Specimen vs Manrope (V1), Hanken (heavier), Figtree (too friendly), **Schibsted (comma/period spacing glitches in numerals — rejected)**. | ≈ 29 KB |
-| **Devanagari motto lines** | **Tiro Devanagari Hindi** 400 | Serif Devanagari to match the display; loaded lazily (unicode-range) and **never above the fold** (V1 hero kicker removed from the LCP area — M9). | lazy, ≤ 30 KB |
+| **Devanagari motto lines** | **Noto Serif Devanagari** 400 | Serif Devanagari to match the display; loaded lazily (unicode-range) and **never above the fold** (V1 hero kicker removed from the LCP area — M9). Chosen over Tiro Devanagari Hindi on measured size: **49.8 KB vs 96.5 KB** (Noto Sans 48.7, Hind 73, Mukta 97). | lazy, ≈ 50 KB |
 | ~~Mono~~ | *(dropped)* | V1's JetBrains Mono "survey labels" were a template tell; labels are overlines in Instrument Sans. | — |
 
 **Font budget:** V1 shipped **six** woff2 files ≈ **274 KB** (4 families). V2 critical path ≈ **73 KB** (two Newsreader weights + one variable sans) → **−73 %** (M9).
@@ -292,7 +292,7 @@ Breadcrumb: 13 px `ink-3`, `/` separators, current item `ink`, `<nav aria-label=
   /* type */
   --font-display: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
   --font-sans: var(--font-instrument), system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-deva: var(--font-tiro-deva), "Nirmala UI", "Noto Serif Devanagari", serif;
+  --font-deva: var(--font-noto-deva), "Nirmala UI", "Noto Serif Devanagari", serif;
   --text-display-xl: clamp(2.75rem, 1.5rem + 5.2vw, 5rem);
   --text-display-lg: clamp(2.25rem, 1.4rem + 3.2vw, 4rem);
   --text-display-md: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem);

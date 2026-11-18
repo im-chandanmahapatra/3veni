@@ -35,6 +35,7 @@
   "optionalDependencies": {
     "@next/swc-win32-x64-msvc": "^16.4.6",
     "@tailwindcss/oxide-win32-x64-msvc": "^4.3.5",
-    "lightningcss-win32-x64-msvc": "^1.33.0"
+    "lightningcss-win32-x64-msvc": "^1.33.0",
+    "sharp": "^0.35.5"
   }
 }

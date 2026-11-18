@@ -12,3 +12,8 @@ next-env.d.ts
 !.env.example
 .playwright-cli/
 .aistudio/
+
+# local scratch + audit artefacts
+scratch/
+scripts/audit/node_modules/
+scripts/audit/out/

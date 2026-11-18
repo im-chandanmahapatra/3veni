@@ -1,10 +1,4 @@
 import type { Metadata } from 'next';
-import {
-  Cormorant_Garamond,
-  JetBrains_Mono,
-  Manrope,
-  Noto_Sans_Devanagari,
-} from 'next/font/google';
 import { SITE_CONFIG } from '@/config/siteConfig';
 import { CookieConsentProvider } from '@/context/CookieConsentContext';
 import Navbar from '@/components/navigation/Navbar';
@@ -17,35 +11,7 @@ import { buildOrganizationJsonLd, buildWebSiteJsonLd } from '@/lib/structuredDat
 import MotionRootProvider from '@/components/motion/MotionRootProvider';
 import BrandIntroCurtain from '@/components/motion/BrandIntroCurtain';
 import '@/styles/globals.css';
-
-const cormorant = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600'],
-  style: ['normal', 'italic'],
-  variable: '--font-serif',
-  display: 'swap',
-});
-
-const manrope = Manrope({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-sans',
-  display: 'swap',
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500'],
-  variable: '--font-mono',
-  display: 'swap',
-});
-
-const devanagari = Noto_Sans_Devanagari({
-  subsets: ['devanagari'],
-  weight: ['400', '500'],
-  variable: '--font-devanagari',
-  display: 'swap',
-});
+import { fontClassName } from './fonts';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_CONFIG.siteUrl),
@@ -85,8 +51,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      data-scroll-behavior="smooth"
-      className={`${cormorant.variable} ${manrope.variable} ${jetbrainsMono.variable} ${devanagari.variable}`}
+      className={fontClassName}
     >
       <body suppressHydrationWarning className="min-h-screen flex flex-col bg-[#F6F1E7] text-[#24221E] antialiased selection:bg-[#98400F] selection:text-[#F6F1E7]">
         <JsonLd data={buildOrganizationJsonLd()} />
