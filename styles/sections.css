@@ -363,3 +363,7 @@
 .dossier-aside .enquiry-actions { grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 64rem) { .dossier-grid > .dossier-aside { align-self: stretch; } }
 @media (max-width: 22.5rem) { .site-header .brand > span:not(.brand__mark) { display: none; } }
+@media (max-width: 22.5rem) { .site-header__actions { gap: 0.25rem; } .site-header__actions .btn { padding-inline: 0.875rem; } }
+.concept { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 64rem) { .concept { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.cookie-status .btn { white-space: normal; text-align: center; }
