@@ -124,7 +124,7 @@ export default function Masterplan({
             <p className="t-overline">
               {active.code} · {active.formatLabel}
             </p>
-            <h3 className="t-title">{active.name}</h3>
+            <p className="t-title">{active.name}</p>
             <p className="t-caption">{active.terrain}</p>
             <SpecList
               items={[
