@@ -367,3 +367,6 @@
 .concept { grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 64rem) { .concept { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
 .cookie-status .btn { white-space: normal; text-align: center; }
+.concept__body { min-width: 0; }
+.concept__body .btn { white-space: normal; text-align: center; max-width: 100%; }
+.lightbox__img { -webkit-user-drag: none; user-select: none; }

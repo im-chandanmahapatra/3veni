@@ -85,6 +85,7 @@ export default function Lightbox({
             sizes="100vw"
             placeholder="blur"
             className="lightbox__img"
+            draggable={false}
           />
           <figcaption className="lightbox__caption">{current.caption}</figcaption>
         </figure>
